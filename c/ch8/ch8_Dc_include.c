@@ -1,13 +1,19 @@
 #include <stdio.h>
 #include <assert.h>
 
+/* once i figure out how to evaluate performance of these algorithms
+ * ill spend days figuring out what is better in terms of speed, or
+ * in terms of memory usage, but my OCD will be sated */
+
+
 /* spills array to screen, in 5 columns, tab delimited
  * things get weird, however the structure is mostly correct,
  * 	when using long numbers */
 void printArray(long long *array, unsigned short arrayLength)
 {
 	printf("array[*] = {\n");
-	for (unsigned register short i = 0; i < arrayLength; i++, array++)
+	for (unsigned register short i = 0; i < arrayLength; i++, array++) {
+
 		/* 1 is added to i in the if condition
 		 *	so that natural counting is what happens when
 		 *	the columns are printing  */
@@ -16,10 +22,12 @@ void printArray(long long *array, unsigned short arrayLength)
 		} else {
 			printf("%lld,\t", *array);
 		}
+	}
 
 	printf("}\n");
 }
 
+// im leaving this one in here for comparison purposes
 /* selection sort implementation, using nested for-loops
  * brings smallest numbers to the top */
 void arraySelectionSort(long long *array, unsigned short arrayLength)
@@ -45,12 +53,43 @@ void arraySelectionSort(long long *array, unsigned short arrayLength)
 	assert (array[0] < array[arrayLength - 1]);
 }
 
-/* the way the book described the bubble sort was the same as the
- *	selection sort, with the comparison reversed
- * this bubblesort is reversed from the book's description
- * 	to bring the largest numbers to the top
+/* slightly modified for quicker execution */
+void arraySelectionSort2(long long *array, unsigned short arrayLength)
+{
+	long long temp;
+
+	for (unsigned register short arrayPosition = 0;	arrayPosition < arrayLength; arrayPosition++) {
+		for (unsigned register short i = arrayPosition;	i < arrayLength; i++) {
+			if (array[i] < array[arrayPosition]) {
+				temp = array[i];
+				array[i] = array[arrayPosition];
+				array[arrayPosition] = temp;
+			}
+
+			/* after finding a smaller value, no need to
+			 * go through the rest of the array
+			 * at least according to this logic */
+
+			 /* should be noted that SO FAR this works
+			  * and has passed many times flawlessly */
+			continue;
+		}
+	}
+
+	assert (array[0] < array[arrayLength - 1]);
+}
+
+/* the description of bubblesort appeared to be the same as the
+ * selection sort, but further readings into the algorightm
+ * show they are only conceptually similar
  *
- * bubble sort implementation, using nested for-loops */
+ * i was convinced of my own genius, and do not understand the problem
+ *
+ * leaving this here so i have a way of reverse sorting an array
+ * however it is not a true bubble sort
+ *
+ * i will likely not implement a true bubble sort, the algorithm
+ * suggests inefficiency in terms of IO */
 void arrayBubbleSort(long long *array, unsigned short arrayLength)
 {
 	long long temp; 
@@ -58,7 +97,7 @@ void arrayBubbleSort(long long *array, unsigned short arrayLength)
 	for (unsigned register short arrayPosition = 0;
 			arrayPosition < arrayLength; arrayPosition++)
 		for (unsigned register short i = arrayPosition;
-				i < arrayLength; i++)
+				i < arrayLength; i++, arrayLength--)
 			if (array[i] > array[arrayPosition]) {
 				temp = array[arrayPosition];
 				array[arrayPosition] = array[i];
