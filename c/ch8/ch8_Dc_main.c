@@ -4,7 +4,6 @@
  * and after sorting, the arrays will be printed out */
 
 #include <stdio.h>
-#include <assert.h>
 #include "ch8_Dc_include.c"
 
 /* mayhaps allow a user to pass CLI argument for number of
@@ -13,10 +12,10 @@
  * dumping 2 to the screen */
 int main(void)
 {
-	unsigned short numberOfElements = 25;
-	long long int copy0[numberOfElements], copy1[numberOfElements], copy2[numberOfElements];
+	unsigned short numElmnts = 25;
+	long long int copy0[numElmnts], copy1[numElmnts];
 
-	for (unsigned register short i = 0; i < numberOfElements; i++) {
+	for (unsigned register short i = 0; i < numElmnts; i++) {
 		/* add 1 to array index, because user will use natural
 		 *	counting, not index0 counting */
 		printf("Enter number to store: %d\n", i+1);
@@ -24,24 +23,16 @@ int main(void)
 
 		/* duplicate */
 		copy1[i] = copy0[i];
-		copy2[i] = copy0[i];
 	}
 
-	// testing on different algorithm
-	/*
 	printf("\n\n\tSelection Sort:\n");
-	arraySelectionSort(&copy0[0], numberOfElements);
-	printArray(&copy0[0], numberOfElements);
+	arraySelectionSort(&copy0[0], numElmnts);
+	printArray(&copy0[0], numElmnts);
 
 	
 	printf("\n\n\tBubble Sort:\n");
-	arrayBubbleSort(&copy1[0], numberOfElements);
-	printArray(&copy1[0], numberOfElements);
-	*/
-
-	printf("\n\n\tSelection Sort 2:\n");
-	arraySelectionSort2(&copy2[0], numberOfElements);
-	printArray(&copy2[0], numberOfElements);
+	arrayBubbleSort(&copy1[0], numElmnts);
+	printArray(&copy1[0], numElmnts);
 
 	return 0;
 }
