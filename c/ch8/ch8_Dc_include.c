@@ -60,23 +60,20 @@ void arraySelectionSort(long long *array, unsigned short arrayLen)
  * i was convinced of my own genius, and do not understand the problem
  *
  * leaving this here so i have a way of reverse sorting an array
- * however it is not a true bubble sort
- *
- * i will likely not implement a true bubble sort, the algorithm
- * suggests inefficiency in terms of IO */
+ * however it is not a true bubble sort */
 void arrayBubbleSort(long long *array, unsigned short arrayLen)
 {
 	long long temp; 
 
-	for (unsigned register short arrayIndex = 0;
-			arrayIndex < arrayLen; arrayIndex++)
-		for (unsigned register short i = arrayIndex;
-				i < arrayLen; i++, arrayLen--)
+	for (unsigned register short arrayIndex = 0; arrayIndex < arrayLen; arrayIndex++){
+		for (unsigned register short i = arrayIndex; i < arrayLen; i++){
 			if (array[i] > array[arrayIndex]) {
 				temp = array[arrayIndex];
 				array[arrayIndex] = array[i];
 				array[i] = temp;
 			}
+		}
+	}
 	
 	assert (array[0] > array[arrayLen - 1]);
 }
