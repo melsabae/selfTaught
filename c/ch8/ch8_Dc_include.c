@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <assert.h>
 
 /* once i figure out how to evaluate performance of these algorithms
@@ -41,48 +40,17 @@ void arraySelectionSort(long long *array, unsigned short arrayLen)
 	 *	in each iteration of the outer loop
 	 * i absorbs that value, moving through each element
 	 *	incrementally on the inner loop */
-	for (unsigned register short arrayIndex = 0;
-			arrayIndex < arrayLen; arrayIndex++)
-		for (unsigned register short i = arrayIndex;
-				i < arrayLen; i++)
-			if (array[i] < array[arrayIndex]) {
-				temp = array[i];
-				array[i] = array[arrayIndex];
-				array[arrayIndex] = temp;
-			}
-
-	assert (array[0] < array[arrayLen - 1]);
-}
-
-/* slightly modified for quicker execution */
-void arraySelectionSort2(long long *array, unsigned short arrayLen)
-{
-	long long temp;
-	bool modified = false;
-	
 	for (unsigned register short arrayIndex = 0; arrayIndex < arrayLen; arrayIndex++) {
-		for (unsigned register short i = arrayIndex; i < arrayLen; i++) {
+		for (unsigned register short i = arrayIndex; i < arrayLen; i++){
 			if (array[i] < array[arrayIndex]) {
 				temp = array[i];
 				array[i] = array[arrayIndex];
 				array[arrayIndex] = temp;
-				modified = true;
 			}
-			
-			/* after finding a smaller value, no need to
-			 * go through the rest of the array
-			 * at least according to this logic */
-
-			 /* should be noted that SO FAR this works
-			  * and has passed many times flawlessly */
 		}
-
-		if (modified)
-			continue;
-		else
-			printf("%d\n", arrayIndex);
-			break;
 	}
+
+	assert (array[0] <= array[arrayLen - 1]);
 }
 
 /* the description of bubblesort appeared to be the same as the
