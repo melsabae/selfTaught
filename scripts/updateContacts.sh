@@ -28,7 +28,19 @@ echo 'STOCK,SOURCE,CONTACT' > $OUTFILE
 
 # it gets gnarly here
 # AKA: the actual work
-strings $ADTFILE | grep -P ^[a-lA-L][0-9]\{3\}\ .* | cut -c1-68 | grep -vP ^[a-lA-L][0-9]\{3\}\ \{3,4\}[\w\ ]\{1,30\}$\|^.\{38\}[^a-zA-Z]*$ | sed -e 's_\(.\{8\}\)\(.\{30\}\)\(.*\)_"\1","\2","\3"_g' -e 's_ \{2,\}__g' | sort >> $OUTFILE
+
+# we're using strings because there's no shell for the database engine we have to use
+# dirty dirty non-hack
+# then a cut, since the database engine stores unused space as whitespace, this makes the next part simpler
+# grep away anything not having a purchase source and/or a contact
+# comma delimit && wrap each token in double quotes, then remove extra whitespace
+# sort then dump output into a .csv file
+strings $ADTFILE \
+	| grep -P ^[a-lA-L][0-9]\{3\}\ .* \
+	| cut -c1-68 \
+	| grep -vP ^[a-lA-L][0-9]\{3\}\ \{3,4\}[\w\ ]\{1,30\}$\|^.\{38\}[^a-zA-Z]*$ \
+	| sed -e 's_\(.\{8\}\)\(.\{30\}\)\(.*\)_"\1","\2","\3"_g' -e 's_ \{2,\}__g' \
+	| sort >> $OUTFILE
 
 cp $OUTFILE $COPYFILE
 
