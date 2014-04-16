@@ -1,9 +1,9 @@
-# script to change keyboard brightness by 1 increment
-# needs root priv
+# script to change keyboard brightness
 
+# needs root priv
 # add this to sudoers for command to work
-# saba = ALL: NOPASSWD: /path/to/kbdillum.sh
-# must be run with sudo
+# your_user	ALL= NOPASSWD: /path/to/kbdillum.sh
+# must be run with sudo afterwards
 
 #!/bin/bash
 
@@ -50,8 +50,8 @@ case "$1" in
 	off)
 		kbdillumoff;;
 	*)
-		# echo "Keyboard backlight toggle script"
-		# echo "Usage: $0 {up | down | max | off}"
+		echo "Keyboard backlight script"
+		echo "Usage: sudo $0 {up | down | max | off}"
 		exit 0;;
 esac
 
