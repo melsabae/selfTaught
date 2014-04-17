@@ -11,13 +11,18 @@ kbd_brightness=$(cat /sys/class/leds/samsung::kbd_backlight/brightness)
 max_brightness=$(cat /sys/class/leds/samsung::kbd_backlight/max_brightness)
 brightness_file="/sys/class/leds/samsung::kbd_backlight/brightness"
 off=0
+notify="please"
+notify_icon="/usr/share/icons/HighContrast/scalable/emblems/emblem-system.svg"
 
 kbdillumdown() {
 	if [ $kbd_brightness -le $off ]; then
 		exit;
 	else
 		echo $(expr $kbd_brightness - 1) > $brightness_file
-		exit
+	fi
+
+	if [ "$notify" = please ]; then
+		notify-send "Keyboard Backlight Brightness" "$(expr $kbd_brightness - 1) / $max_brightness" -i $notify_icon
 	fi
 }
 
@@ -26,33 +31,50 @@ kbdillumup() {
 		exit
 	else
 		echo $(expr $kbd_brightness + 1) > $brightness_file
-		exit
+	fi
+
+	if [ "$notify" = please ]; then
+		notify-send "Keyboard Backlight Brightness" "$(expr $kbd_brightness + 1) / $max_brightness" -i $notify_icon
 	fi
 }
 
 kbdillummax() {
 	echo $max_brightness > $brightness_file
+
+	if [ "$notify" = please ]; then
+		notify-send "Keyboard Backlight Brightness" "$max_brightness / $max_brightness" -i $notify_icon
+	fi
+
 	exit
 }
 
 kbdillumoff() {
 	echo $off > $brightness_file
+
+	if [ "$notify" = please ]; then
+		notify-send "Keyboard Backlight Brightness" "$off / $max_brightness" -i $notify_icon
+	fi
+
 	exit
 }
 
-case "$1" in
-	up)
-		kbdillumup;;
-	down)
-		kbdillumdown;;
-	max)
-		kbdillummax;;
-	off)
-		kbdillumoff;;
-	*)
-		echo "Keyboard backlight script"
-		echo "Usage: sudo $0 {up | down | max | off}"
-		exit 0;;
-esac
+if [ $(id -u) -eq 0 ]; then
+	case "$1" in
+		up)
+			kbdillumup;;
+		down)
+			kbdillumdown;;
+		max)
+			kbdillummax;;
+		off)
+			kbdillumoff;;
+		*)
+			echo "Usage: sudo $0 {up | down | max | off}"
+			exit 0;;
+	esac
+else
+	echo "This script is ineffective without root priveledges"
+	exit
+fi
 
 exit 0
