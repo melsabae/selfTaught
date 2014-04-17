@@ -22,7 +22,7 @@ kbdillumdown() {
 	fi
 
 	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight Brightness" "$(expr $kbd_brightness - 1) / $max_brightness" -i $notify_icon
+		notify-send "Keyboard Backlight" "$(expr $kbd_brightness - 1) / $max_brightness" -i $notify_icon
 	fi
 }
 
@@ -34,7 +34,7 @@ kbdillumup() {
 	fi
 
 	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight Brightness" "$(expr $kbd_brightness + 1) / $max_brightness" -i $notify_icon
+		notify-send "Keyboard Backlight" "$(expr $kbd_brightness + 1) / $max_brightness" -i $notify_icon
 	fi
 }
 
@@ -42,7 +42,7 @@ kbdillummax() {
 	echo $max_brightness > $brightness_file
 
 	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight Brightness" "$max_brightness / $max_brightness" -i $notify_icon
+		notify-send "Keyboard Backlight" "$max_brightness / $max_brightness" -i $notify_icon
 	fi
 
 	exit
@@ -52,7 +52,7 @@ kbdillumoff() {
 	echo $off > $brightness_file
 
 	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight Brightness" "$off / $max_brightness" -i $notify_icon
+		notify-send "Keyboard Backlight" "$off / $max_brightness" -i $notify_icon
 	fi
 
 	exit
