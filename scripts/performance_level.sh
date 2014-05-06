@@ -1,5 +1,5 @@
 # script switches performance_level of samsung series 9 laptop
-# valid values are {silent | performance}
+# valid values are {silent | normal}
 
 # will require root privs to run
 # add your_user	ALL= NOPASSWD: /path/to/performance_level.sh
@@ -24,9 +24,9 @@ toggle() {
 if [ $(id -u) -eq 0 ]; then
 	case "$1" in
 		silent)
-			echo "normal" > $performance_file;;
-		normal)
 			echo "silent" > $performance_file;;
+		normal)
+			echo "normal" > $performance_file;;
 		[aA-zZ]*)
 			echo "Usage: sudo $0 {silent | normal}";
 			exit;;
