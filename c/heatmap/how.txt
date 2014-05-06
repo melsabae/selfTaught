@@ -1,0 +1,5 @@
+letters that share with a symbol will need to be added together, so that their heatmap can be stronger and more accurate
+
+once this is done, we can store the hightest heat values as variables, and decide how to map out the heat distributions (probably by length of keys away).
+
+once this is performed we can simply choose a color based on heat value and proximity to hotter or cooler keys
