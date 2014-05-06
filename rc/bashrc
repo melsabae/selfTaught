@@ -98,11 +98,14 @@ if [ -x /usr/bin/dircolors ]; then
     alias cls='clear; ls'
     alias cll='clear; ll'
     alias lsl='ls -1 | wc -l'
+    alias sabaservsensors="ssh saba@sabaserv.x64.me 'bash -ic sensors'"
     alias gcc='gcc -std=gnu99 -mtune=native -Wall'
+    alias updatelocalsite='sudo rm -irf /var/www/*; sudo cp -R ~/website/masjid/* /var/www'
     alias calc='gnome-calculator &'
     alias headset='pactl load-module module-bluetooth-discover'
     alias lst='ll -t'
     alias viber='/usr/share/viber/Viber &'
+    alias node='nodejs'
 fi
 
 # some more ls aliases

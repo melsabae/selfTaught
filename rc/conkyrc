@@ -1,0 +1,97 @@
+# conky configuration
+#
+# The list of variables has been removed from this file in favour
+# of keeping the documentation more maintainable.
+# Check http://conky.sf.net for an up-to-date-list.
+#
+# For ideas about how to modify conky, please see:
+# http://crunchbanglinux.org/forums/topic/59/my-conky-config/
+#
+# For help with conky, please see:
+# http://crunchbanglinux.org/forums/topic/2047/conky-help/
+#
+# Enjoy! :)
+##############################################
+# Settings
+##############################################
+background yes
+use_xft yes
+xftfont Source Code Pro:size=9
+xftalpha 0.5
+update_interval 3
+total_run_times 0
+own_window yes
+own_window_type normal
+own_window_transparent yes
+#own_window_argb_visual
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+minimum_size 200 5
+maximum_width 252
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders yes
+alignment bottom_right
+gap_x 5
+gap_y 5
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+override_utf8_locale no
+TEXT
+load $alignr $loadavg
+${if_existing /proc/net/route wlan0}wlan0${alignr}up:${upspeed wlan0} down:${downspeed wlan0}${endif}
+cpu0 $alignr ${cpu cpu0}%
+${cpubar cpu0}
+cpu1 $alignr ${cpu cpu1}%
+${cpubar cpu1}
+cpu2 $alignr ${cpu cpu2}%
+${cpubar cpu2}
+cpu3 $alignr ${cpu cpu3}%
+${cpubar cpu3}
+mem $alignc $mem / $memmax $alignr $memperc%
+$membar
+/ $alignc ${fs_used /} / ${fs_size /} $alignr ${fs_used_perc /}%
+${fs_bar /}
+swap $alignc $swap / $swapmax $alignr $swapperc%
+${swapbar}
+$processes existing ($running_processes running) $alignr PID    CPU
+${top name 1} $alignr ${top pid 1} ${top cpu 1}
+${top name 2} $alignr ${top pid 2} ${top cpu 2}
+${top name 3} $alignr ${top pid 3} ${top cpu 3}
+${top name 4} $alignr ${top pid 4} ${top cpu 4}
+${top name 5} $alignr ${top pid 5} ${top cpu 5}
+
+F1$alignr dropdown term
+Alt+F1$alignr menu
+Alt+F2$alignr run dialog
+Alt+F3$alignr application finder
+Alt+F4$alignr close
+Alt+F5$alignr widen window max
+Alt+F6$alignr lengthen window max
+Alt+F10$alignr maximize window
+Alt+F11$alignr fullscreen
+Super+w$alignr web browser
+Super+e$alignr editor
+Super+r$alignr application finder
+Super+t$alignr terminal
+Super+f$alignr file manager
+Super+l$alignr lock workstation
+Super+1$alignr music browser
+Super+2$alignr instant messaging
+Super+3$alignr word processor
+Super+4$alignr spreadsheet
+PrtSc$alignr screenshot
+
+
+
+
+
+
+
+
+
+
+
+${image ~/Pictures/radar.jpg -p 0,695 -s 250x170 -f 20}
