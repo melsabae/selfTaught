@@ -1,8 +1,9 @@
-# script that pulls in tracker's adt table file and pulls out contacts # since the database engine doesn't offer anything other than GUI, had to pull straight out of the file using strings
+# script that pulls in tracker's adt table file and pulls out contacts
+# since the database engine doesn't offer anything other than GUI, had to pull straight out of the file using strings
 # quick-n-dirty but the output has not failed _YET_
 
 #!/bin/bash
-# include stdsarcasm.h
+# include <stdsarcasm.h>
 
 # not normally what i would do but it cleans up some other parts and runs leaner
 cd ~/contactwork
