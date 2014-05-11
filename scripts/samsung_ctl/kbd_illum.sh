@@ -12,7 +12,7 @@ max_brightness=$(cat /sys/class/leds/samsung::kbd_backlight/max_brightness)
 brightness_file="/sys/class/leds/samsung::kbd_backlight/brightness"
 off=0
 notify="please"
-notify_icon="/usr/share/icons/HighContrast/scalable/emblems/emblem-system.svg"
+notify_icon="/usr/share/icons/gnome/scalable/status/keyboard-brightness-symbolic.svg"
 
 kbdillumdown() {
 	if [ $kbd_brightness -le $off ]; then

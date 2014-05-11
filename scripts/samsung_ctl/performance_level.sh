@@ -10,7 +10,7 @@
 current_level=$(cat /sys/devices/platform/samsung/performance_level)
 performance_file="/sys/devices/platform/samsung/performance_level"
 notify="please"
-notify_icon="/usr/share/icons/HighContrast/scalable/emblems/emblem-system.svg"
+notify_icon="/usr/share/icons/gnome/scalable/categories/preferences-system-symbolic.svg"
 
 toggle() {
 	case $current_level in
