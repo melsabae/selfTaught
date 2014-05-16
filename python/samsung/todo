@@ -1,0 +1,6 @@
+translate scripts into python, embed it into proc_manip.py
+
+figure out why it will not work if the application is called from outside its own directory (subdir included)
+
+implement combobox or optionlist for choosing what options are wanted
+implement notifications as syscall?
