@@ -20,10 +20,6 @@ kbdillumdown() {
 	else
 		echo $(expr $kbd_brightness - 1) > $brightness_file
 	fi
-
-	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight" "$(expr $kbd_brightness - 1) / $max_brightness" -i $notify_icon
-	fi
 }
 
 kbdillumup() {
@@ -32,30 +28,20 @@ kbdillumup() {
 	else
 		echo $(expr $kbd_brightness + 1) > $brightness_file
 	fi
-
-	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight" "$(expr $kbd_brightness + 1) / $max_brightness" -i $notify_icon
-	fi
 }
 
 kbdillummax() {
 	echo $max_brightness > $brightness_file
-
-	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight" "$max_brightness / $max_brightness" -i $notify_icon
-	fi
-
-	exit
 }
 
 kbdillumoff() {
 	echo $off > $brightness_file
+}
 
+notify() {
 	if [ "$notify" = please ]; then
-		notify-send "Keyboard Backlight" "$off / $max_brightness" -i $notify_icon
+		notify-send "Keyboard Backlight" "$(cat $brightness_file) / $max_brightness" -i $notify_icon
 	fi
-
-	exit
 }
 
 if [ $(id -u) -eq 0 ]; then
@@ -68,13 +54,17 @@ if [ $(id -u) -eq 0 ]; then
 			kbdillummax;;
 		off)
 			kbdillumoff;;
+		[aA-zZ]*)
+			echo "Usage: sudo $0 {up,down,max,off}"
+			exit 0;;
 		*)
-			echo "Usage: sudo $0 {up, down, max, off}"
+			echo "Usage: sudo $0 {up,down,max,off}"
 			exit 0;;
 	esac
+
+	notify
 else
 	echo "This script is ineffective without root priveledges"
-	exit
 fi
 
 exit 0

@@ -42,7 +42,6 @@ if [ $(id -u) -eq 0 ]; then
 	fi
 else
 	echo "This script is ineffective without root priveledges."
-	exit
 fi
 
 exit 0
