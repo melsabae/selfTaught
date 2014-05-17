@@ -30,7 +30,7 @@ if [ $(id -u) -eq 0 ]; then
 		toggle)
 			toggle;;
 		[aA-zZ]*)
-			echo "Usage: sudo $0 {silent, normal}";
+			echo "Usage: sudo $0 {silent,normal,toggle}";
 			exit;;
 		*)
 			toggle;;
