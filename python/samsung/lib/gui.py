@@ -1,5 +1,5 @@
 import Tkinter
-import proc_manip as pm
+import dev_manip as dm
 
 class form(Tkinter.Tk):
 	def __init__(self, parent):
@@ -8,16 +8,16 @@ class form(Tkinter.Tk):
 		self.initialize()
 
 	def PerfChange(self):
-		pm.ExecScript( pm.GetPath( pm.perf_level ))
+		dm.ExecScript( dm.GetPath( dm.perf_level ))
 
 	def KbdillumChange(self):
-		pm.ExecScript( pm.GetPath( pm.kbd_illum ))
+		dm.ExecScript( dm.GetPath( dm.kbd_illum ))
 
 	def BluetoothChange(self):
-		pm.ExecScript( pm.GetPath( pm.bt_ctl ))
+		dm.ExecScript( dm.GetPath( dm.bt_ctl ))
 
 	def WifiChange(self):
-		pm.ExecScript( pm.GetPath( pm.wifi_ctl ))
+		dm.ExecScript( dm.GetPath( dm.wifi_ctl ))
 
 	def initialize(self):
 		self.grid()
@@ -34,3 +34,6 @@ class form(Tkinter.Tk):
 
 		btButton = Tkinter.Button( self, text="Wi-Fi Control", command=self.WifiChange )
 		btButton.grid(column=0, row=3)
+
+		quitButton = Tkinter.Button( self, text="Quit", command=self.quit )
+		quitButton.grid(column=0, row=4)

@@ -2,6 +2,6 @@ this is a little python frontend im writing for some scripts i also wrote
 allowing you to manage certain aspects of a samsung series 9
 	specifically np900x3d
 with a small program
-should be able to be used on any machine so long as the files for the hardware control (under /proc) can be found
+should be able to be used on any machine so long as the files for the hardware control (under /sys) can be found
 
 will need to be run as root or under sudo
