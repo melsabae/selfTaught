@@ -8,16 +8,16 @@ class form(Tkinter.Tk):
 		self.initialize()
 
 	def PerfChange(self):
-		dm.ExecScript( dm.GetPath( dm.perf_level ))
+		pass
 
 	def KbdillumChange(self):
-		dm.ExecScript( dm.GetPath( dm.kbd_illum ))
+		pass
 
 	def BluetoothChange(self):
-		dm.ExecScript( dm.GetPath( dm.bt_ctl ))
+		pass
 
 	def WifiChange(self):
-		dm.ExecScript( dm.GetPath( dm.wifi_ctl ))
+		pass
 
 	def initialize(self):
 		self.grid()

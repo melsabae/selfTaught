@@ -1,1 +1,1 @@
-# this file only exists so that Python can read subdir as a module
+# this file only exists so that Python can this dir as a module

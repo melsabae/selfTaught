@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os
 
 # old code that should be removed once new functionality implemented
