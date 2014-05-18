@@ -1,22 +1,4 @@
-#!/usr/bin/env python
 import os
-
-# old code that should be removed once new functionality implemented
-"""
-bt_ctl = "bt_ctl.sh"
-wifi_ctl = "wifi_ctl.sh"
-perf_level = "perf_level.sh"
-kbd_illum = "kbd_illum.sh"
-
-def GetPath( _file ):
-	return os.path.abspath( './lib/sh/' + _file )
-
-#only runs if file can be found, and then if it is executable per OS
-#_option's default value is empty
-def ExecScript( _file, _option="" ):
-	if os.path.exists( _file ) and os.access( _file, os.X_OK ):
-		return os.system( "sudo " + _file + " " + _option)
-"""
 
 sysdev = '/sys/devices/'
 samsung = sysdev + 'platform/samsung'
@@ -70,18 +52,4 @@ def WriteValue( device, value ):
 def ReadValue( device ):
 	with open( device, 'r' ) as _file:
 		return _file.readline()
-
-# worked fine :D
-#WriteValue( wlan, "0" )
-#WriteValue( bt, "1" )
-#WriteValue( kbd_bright, "8" )
-#WriteValue( batt_extend, "0" )
-#WriteValue( perf_level, "normal" )
-#WriteValue( usb_charge, "1" )
-#WriteValue( wlan, "1" )
-#WriteValue( kbd_bright, "0" )
-#WriteValue( batt_extend, "1" )
-#WriteValue( perf_level, "silent" )
-#WriteValue( usb_charge, "0" )
-
 
