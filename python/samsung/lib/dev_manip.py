@@ -63,8 +63,9 @@ mon_maxBright = FindFileStruct( "max_brightness", sysdev, "acpi_video0" )
 
 # this will blow away the file's current contents, as we are currently wanting to do for hardware control
 def WriteValue( device, value ):
+	value2 = str( value )
 	with open( device, 'w' ) as _file:
-		return _file.write( value )
+		return _file.write( value2 )
 
 def ReadValue( device ):
 	with open( device, 'r' ) as _file:
