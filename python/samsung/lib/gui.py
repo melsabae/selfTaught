@@ -7,17 +7,20 @@ class form(Tkinter.Tk):
 		self.parent = parent
 		self.initialize()
 
-	def PerfChange(self):
+	def Notify():
 		pass
+
+	def PerfChange(self):
+		self.Notify()
 
 	def KbdillumChange(self):
-		pass
+		self.Notify()
 
 	def BluetoothChange(self):
-		pass
+		self.Notify()
 
 	def WifiChange(self):
-		pass
+		self.Notify()
 
 	def initialize(self):
 		self.grid()
@@ -37,3 +40,4 @@ class form(Tkinter.Tk):
 
 		quitButton = Tkinter.Button( self, text="Quit", command=self.quit )
 		quitButton.grid(column=0, row=4)
+

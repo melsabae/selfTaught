@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 
 # old code that should be removed once new functionality implemented
@@ -45,7 +46,6 @@ bt = FindFile( "name", samsung, "samsung-bluetooth" )
 bt = bt[:-4] + "state"
 wlan = FindFile( "name", samsung, "samsung-wlan" )
 wlan = wlan[:-4] + "state"
-print wlan
 
 kbd_bright = FindFile( "brightness", samsung )
 kbd_maxBright = FindFile( "max_brightness", samsung )
@@ -64,13 +64,23 @@ mon_maxBright = FindFileStruct( "max_brightness", sysdev, "acpi_video0" )
 # this will blow away the file's current contents, as we are currently wanting to do for hardware control
 def WriteValue( device, value ):
 	with open( device, 'w' ) as _file:
-		_file.write( value )
+		return _file.write( value )
+
+def ReadValue( device ):
+	with open( device, 'r' ) as _file:
+		return _file.readline()
 
 # worked fine :D
-WriteValue( wlan, "0" )
-WriteValue( bt, "1" )
-WriteValue( kbd_bright, "8" )
-WriteValue( batt_extend, "0" )
-WriteValue( perf_level, "normal" )
-WriteValue( usb_charge, "1" )
+#WriteValue( wlan, "0" )
+#WriteValue( bt, "1" )
+#WriteValue( kbd_bright, "8" )
+#WriteValue( batt_extend, "0" )
+#WriteValue( perf_level, "normal" )
+#WriteValue( usb_charge, "1" )
+#WriteValue( wlan, "1" )
+#WriteValue( kbd_bright, "0" )
+#WriteValue( batt_extend, "1" )
+#WriteValue( perf_level, "silent" )
+#WriteValue( usb_charge, "0" )
+
 

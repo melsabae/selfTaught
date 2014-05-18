@@ -1,5 +1,7 @@
 translate scripts into python, embed it into dev_manip.py
 
+implement exception handling, return value checking, and determining if the files found exist or are Nonetype
+
 do euid checking for root permissions, as we're touching on root's files
 
 implement combobox or optionlist for choosing what options are wanted
