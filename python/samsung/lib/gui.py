@@ -26,10 +26,10 @@ class form( tk.Tk ):
 	def OnOff( self, device, value ):
 		if value == 'on':
 			value = '1'
-			return dc.Set( device, value )
+			return dc.SetState( device, value )
 		elif value == 'off':
 			value = '0'
-			return dc.Set( device, value )
+			return dc.SetState( device, value )
 		else:
 			return False
 
@@ -79,7 +79,7 @@ class form( tk.Tk ):
 		wifiOpts.grid( column = 1, row = 2, sticky = tk.W + tk.E )
 		wifiBut = tk.Button( self, text = "Wi-Fi Control", 
 				command = lambda:
-				self.OnOff( self.wifi, wifi.get() ))
+				self.OnOff( self.wifi_dev, wifi.get() ))
 		wifiBut.grid( column = 0, row = 2, sticky = tk.W + tk.E )
 
 		bt = tk.StringVar()
@@ -88,7 +88,7 @@ class form( tk.Tk ):
 		btOpts.grid( column = 1, row = 3, sticky = tk.W + tk.E )
 		btBut = tk.Button( self, text = "Bluetooth Control",
 				command = lambda:
-				self.OnOff( self.bt, bt.get() ))
+				self.OnOff( self.bt_dev, bt.get() ))
 		btBut.grid( column = 0, row = 3, sticky = tk.W + tk.E )
 
 		batt = tk.StringVar()
@@ -97,7 +97,7 @@ class form( tk.Tk ):
 		battOpts.grid( column = 1, row = 4, sticky = tk.W + tk.E )
 		battBut = tk.Button( self, text = "Battery Life Extender",
 				command = lambda:
-				self.OnOff( self.batt, batt.get() ))
+				self.OnOff( self.batt_dev, batt.get() ))
 		battBut.grid( column = 0, row = 4, sticky = tk.W + tk.E )
 
 		usb = tk.StringVar()
@@ -106,7 +106,7 @@ class form( tk.Tk ):
 		usbOpts.grid( column = 1, row = 6, sticky = tk.W + tk.E )
 		usbBut = tk.Button( self, text = "USB Charging While Off",
 				command = lambda:
-				self.OnOff( self.usb, usb.get() ))
+				self.OnOff( self.usb_dev, usb.get() ))
 		usbBut.grid( column = 0, row = 6, sticky = tk.W + tk.E )
 
 
