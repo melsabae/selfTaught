@@ -21,6 +21,17 @@ def FindFileStruct( filename, searchpath, dirname ):
 		if dirname in subdirs:
 			return os.path.join( root, dirname, filename )
 
+# this will blow away the file's current contents, as we are currently wanting to do for hardware control
+# we use string here in the  write to make python happy, in the end the linux kernel will read it out of the file as the type it needs
+def WriteValue( device, value ):
+	value2 = str( value )
+	with open( device, 'w' ) as _file:
+		return _file.write( value2 )
+
+def ReadValue( device ):
+	with open( device, 'r' ) as _file:
+		return _file.readline()
+
 # these files exist under /sys/devices/platform/samsung on my machine
 
 #the [:-4] removes the name file, the file we are interested in the contents of, not the actual file itself(both radios employ the same filenames), replacing it with state, the name of the file that controls power to these radios
@@ -42,14 +53,4 @@ mon_bright = FindFileStruct( "brightness", sysdev, "acpi_video0" )
 mon_maxBright = FindFileStruct( "max_brightness", sysdev, "acpi_video0" )
 
 # can we find the ethernet, mouse, vga out, and audio functions?
-
-# this will blow away the file's current contents, as we are currently wanting to do for hardware control
-def WriteValue( device, value ):
-	value2 = str( value )
-	with open( device, 'w' ) as _file:
-		return _file.write( value2 )
-
-def ReadValue( device ):
-	with open( device, 'r' ) as _file:
-		return _file.readline()
 

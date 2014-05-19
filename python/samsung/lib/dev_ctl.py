@@ -2,23 +2,21 @@ import dev_manip as dm
 
 # if using toggle for perf_level you will get an error if trying to use binary values instead of normal or silent
 def Toggle( device, value1, value2 ):
-	""" Toggles state of device, should be used when you have a binary choice """
+	""" Toggles state of device, should be used when
+	you have a binary choice """
 	currentVal = dm.ReadValue( device )
 	if value1 in currentVal:
 		return dm.WriteValue( device, value2 )
 	else:
 		return dm.WriteValue( device, value1 )
 
-def On( device, onValue ):
-	""" Turns device On, should be used where On is binary choice """
-	return dm.WriteValue( device, onValue )
-
-def Off( device, offValue ):
-	""" Turns device off """
-	return dm.WriteValue( device, offValue )
+def SetState( device, stateVal ):
+	""" Turns device to state """
+	return dm.WriteValue( device, stateVal )
 
 def Max( device, maxFile ):
-	""" Changes device to maximum state, should be used where maximum is not binary """
+	""" Changes device to maximum state
+	should be used where maximum is not binary """
 	maxVal = dm.ReadValue( maxFile )
 	return dm.WriteValue( device, maxVal )
 
