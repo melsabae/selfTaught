@@ -1,7 +1,7 @@
 import os
 
 sysdev = '/sys/devices/'
-samsung = sysdev + 'platform/samsung'
+samsung = sysdev + 'platform/samsung/'
 
 # we use readstring in the event multiple file paths match the name in the searchpath, we can return which one we like based on that file's expected contents if we pass it in as readstring
 def FindFile( filename, searchpath, readstring = "" ):
