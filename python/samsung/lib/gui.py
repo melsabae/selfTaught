@@ -1,7 +1,6 @@
-import dev_manip as dm
-import dev_ctl as dc
 import Tkinter as tk
 import tkMessageBox
+import dev_obj as doj
 
 class form( tk.Tk ):
 	def __init__( self, parent ):
@@ -9,56 +8,25 @@ class form( tk.Tk ):
 		self.parent = parent
 		self.initialize()
 
-	def PerfSet( self, value ):
-		try:
-			return dc.SetState( self.perf_dev, value )
-		except IOError:
-			tkMessageBox.showerror( 'IOError', 'Unable to write to device file.\nThis is likely due to insufficient privileges.' )
-
-	def RangeSet( self, device, value, maxFile ):
-		try:
-			# wtb python 2.7 switch statements
-			if value == 'max':
-				return dc.Max( device, maxFile )
-			elif value == 'off':
-				return dc.SetState( device, '0' )
-			elif value == 'up':
-				return dc.Up( device, maxFile )
-			elif value == 'down':
-				return dc.Down( device, '0' )
-			else:
-				return False
-		except IOError:
-			tkMessageBox.showerror( 'IOError', 'This is likely due to insufficient priveledges.', default = tkMessageBox.OK )
-
-
-	def OnOff( self, device, value ):
-		try:
-			if value == 'on':
-				value = '1'
-				return dc.SetState( device, value )
-			elif value == 'off':
-				value = '0'
-				return dc.SetState( device, value )
-			else:
-				return False
-		except IOError:
-			tkMessageBox.showerror( 'IOError', 'This is likely due to insufficient priveledges.', default = tkMessageBox.OK )
-
 	def initialize( self ):
 		self.grid()
 		self.title( 'Samsung Series9 Fn Control' )
 
-		# brings device file paths into UI from dm
-		self.perf_dev = dm.perf_level
-		self.kbd_dev = dm.kbd_bright
-		self.kbd_max = dm.kbd_maxBright
-		self.wifi_dev = dm.wlan
-		self.bt_dev = dm.bt
-		self.batt_dev = dm.batt_extend
-		self.usb_dev = dm.usb_charge
-		self.mon_dev = dm.mon_bright
-		self.mon_max = dm.mon_maxBright
+		# brings device file paths into UI from doj
+		self.perf_dev = doj.Device( 'performance_level',
+				doj.samsung, 'normal', 'silent', '' )
+		self.batt_dev = doj.Device( 'battery_life_extender',
+				doj.samsung, '1', '0', '' )
+		self.usb_dev = doj.Device( 'usb_charge',
+				doj.samsung, '1', '0', '' )
+		self.wifi_dev = doj.Device( 'name', doj.samsung, '1', '0',
+				'' )
+		self.wifi_dev.Path = self.wifi_dev.Path[:-4] + 'state'
+		self.bt_dev = doj.Device( 'name', doj.samsung, '1', '0',
+				'' )
+		self.bt_dev.Path = self.bt_dev.Path[:-4] + 'state'
+		#self.mon_dev = dm.mon_bright
+		#self.kbd_dev = dm.kbd_bright
 
 		# contains all legal options for all hardware referenced
 			# on my machine

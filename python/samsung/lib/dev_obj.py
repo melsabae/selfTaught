@@ -1,23 +1,32 @@
 #!/usr/bin/env python
 import dev_manip as dm
-import dev_ctl as dc
 
-sys_devices = '/sys/devices/'
-samsung = sys_devices + 'platform/samsung/'
+# would have preferred programmatic discovery
+# cheesing it here, but maaaaaaaaan is it simpler
 
-# base class for all devices i have on my machine
+# monitor directory is important, there are 2 directories under backlight
+# and if acpi is not chosen, we might get the other directory which controls
+# the same hardware, which it's minimum value turns the screen off
+# instead of fully dimming it out like i want
+monitor = '/sys/class/backlight/acpi_video0/'
+samsung = '/sys/devices/platform/samsung/'
+
+# base class for all devices i have on my machine, including binary
 class Device:
 	def __init__( self, name, dirs, onVal, offVal, options ):
-		self.name = str( name )
-		self.dirs = str( dirs )
-		self.onVal = str( onVal )
-		self.offVal = str( offVal )
-		self.options = str( options )
+		self.name = name
+		self.dirs = dirs
+		self.onVal = onVal
+		self.offVal = offVal
+		self.options = options
 
-		self.Path = str( self.GetPath() )
+		self.Path = self.DefinePath()
+
+	def DefinePath( self ):
+		return dm.FindFile( self.name, self.dirs, self.options )
 
 	def GetPath( self ):
-		return dm.FindFile( self.name, self.dirs, self.options )
+		return self.Path
 
 	def Read( self ):
 		return dm.ReadValue( self.Path )
@@ -25,54 +34,69 @@ class Device:
 	def Write( self, value ):
 		return dm.WriteValue( self.Path, value )
 
-# devices with on or off modes only, not necessarily 0 or 1
-class BinaryDevice( Device ):
-	def On( self ):
-		return dm.WriteValue( self.Path, self.onVal )
-
 	def Off( self ):
-		return dm.WriteValue( self.Path, self.offVal )
+		return self.Write( self.offVal )
 
+	def On( self ):
+		return self.Write( self.onVal )
+	
+	# not going to be used, and haven't figured it out anyway
 	def Toggle( self ):
-		# lazy skip of type checking
-		if self.name == 'performance_level':
-			return
-
-		if int( self.Read() ) == int( self.onVal ):
-			return self.Off()
-		else:
-			return self.On()
+		pass
 
 # for devices that do not have binary state
 class RangeDevice( Device ):
-	def RangeSet( self, minVal, maxVal ):
-		self.minVal = int( minVal )
-		self.maxVal = int( maxVal )
+	def RangeDefine( self, minVal, increment, maxValFile, decrement ):
+		self.minVal = minVal
+		self.increment = increment
+		self.decrement = decrement
+		self.maxVal = self.MaxVal( maxValFile )
 
+	def MaxVal( self, _file ):
+		readfile = dm.FindFile( _file, self.dirs, '' )
+		with open ( readfile, 'r' ) as f:
+			return f.readline()
+
+	# override on value since on can be anything > OFF
+	def On( self ):
+		pass
+				
 	def Max( self ):
 		return dm.WriteValue( self.Path, self.maxVal )
 
 	def Up( self ):
 		if self.Read() < self.maxVal:
-			return dm.WriteValue( self.Path, int ( self.Read() + 1 ))
+			return dm.WriteValue( self.Path, int ( self.Read() + self.increment ))
 		else:
 			return True
 
 	def Down( self ):
 		if self.Read() > self.minVal:
-			return dm.WriteValue( self.Path, int ( self.Read() -1 ))
+			return dm.WriteValue( self.Path, int ( self.Read() -self.decrement ))
 		else:
 			return True
 
-#perf = BinaryDevice( 'performance_level', samsung, 'normal', 'silent', '' )
+# binary devices
+#perf = Device( 'performance_level', samsung, 'normal', 'silent', '' )
 #perf.On()
 #perf.Off()
-#perf.Toggle()
-#bt = BinaryDevice( 'name', samsung, 1, 0, 'samsung-bluetooth' )
+#bt = Device( 'name', samsung, 1, 0, 'samsung-bluetooth' )
 #bt.Path = bt.Path[:-4] + 'state'
 #bt.On()
 #bt.Off()
-#bt.Toggle()
-wlan = BinaryDevice( 'name', samsung, 1, 0, 'samsung-wlan' )
-kbd_bright = RangeDevice( 'brightness', samsung, 8, 0, '' )
+#wlan = Device( 'name', samsung, 1, 0, 'samsung-wlan' )
+#wlan.Path = wlan.Path[:-4] + 'state'
+#wlan.Off()
+#wlan.On()
+#usb = Device( 'usb_charge', samsung, 1, 0, '' )
+#usb.On()
+#usb.Off()
+#batt = Device( 'battery_life_extender', samsung, 1, 0, '' )
+#batt.Off()
+#batt.On()
 
+# range devices
+#kbd_bright = RangeDevice( 'brightness', samsung, 8, 0, '' )
+#kbd_bright.RangeDefine( '0', '1', 'max_brightness', '1' )
+#mon_bright = RangeDevice( 'brightness', monitor, 100, 0, '' )
+#mon_bright.RangeDefine( '0', '1', 'max_brightness', '1' )
