@@ -20,10 +20,10 @@ class form( tk.Tk ):
 		self.usb_dev = doj.Device( 'usb_charge',
 				doj.samsung, '1', '0', '' )
 		self.wifi_dev = doj.Device( 'name', doj.samsung, '1', '0',
-				'' )
+				'samsung-wlan' )
 		self.wifi_dev.Path = self.wifi_dev.Path[:-4] + 'state'
 		self.bt_dev = doj.Device( 'name', doj.samsung, '1', '0',
-				'' )
+				'samsung-bluetooth' )
 		self.bt_dev.Path = self.bt_dev.Path[:-4] + 'state'
 		#self.mon_dev = dm.mon_bright
 		#self.kbd_dev = dm.kbd_bright
@@ -59,7 +59,7 @@ class form( tk.Tk ):
 		# lambda keeps Tkinter from executing on instantiation
 		perfBut = tk.Button( self, text = "Performance Level",
 				command = lambda:
-				self.PerfSet( perf.get() ))
+				self.perf_dev.Write( perf.get() ))
 		perfBut.grid( column = 0, row = 0, sticky = tk.W + tk.E )
 
 		kbdOpts = tk.OptionMenu( self, kbd, *controlOpts[ 1:5 ])
@@ -74,28 +74,28 @@ class form( tk.Tk ):
 		wifiOpts.grid( column = 1, row = 2, sticky = tk.W + tk.E )
 		wifiBut = tk.Button( self, text = "Wi-Fi Control", 
 				command = lambda:
-				self.OnOff( self.wifi_dev, wifi.get() ))
+				self.wifi_dev.Write( wifi.get() ))
 		wifiBut.grid( column = 0, row = 2, sticky = tk.W + tk.E )
 
 		btOpts = tk.OptionMenu( self, bt, *controlOpts[ :2 ])
 		btOpts.grid( column = 1, row = 3, sticky = tk.W + tk.E )
 		btBut = tk.Button( self, text = "Bluetooth Control",
 				command = lambda:
-				self.OnOff( self.bt_dev, bt.get() ))
+				self.bt_dev.Write( bt.get() ))
 		btBut.grid( column = 0, row = 3, sticky = tk.W + tk.E )
 
 		battOpts = tk.OptionMenu( self, batt, *controlOpts[ :2 ])
 		battOpts.grid( column = 1, row = 4, sticky = tk.W + tk.E )
 		battBut = tk.Button( self, text = "Battery Life Extender",
 				command = lambda:
-				self.OnOff( self.batt_dev, batt.get() ))
+				self.batt_dev.Write( batt.get() ))
 		battBut.grid( column = 0, row = 4, sticky = tk.W + tk.E )
 
 		usbOpts = tk.OptionMenu( self, usb, *controlOpts[ :2 ])
 		usbOpts.grid( column = 1, row = 5, sticky = tk.W + tk.E )
 		usbBut = tk.Button( self, text = "USB Charging While Off",
 				command = lambda:
-				self.OnOff( self.usb_dev, usb.get() ))
+				self.usb_dev.Write( usb.get() ))
 		usbBut.grid( column = 0, row = 5, sticky = tk.W + tk.E )
 
 		monOpts = tk.OptionMenu( self, mon, *controlOpts[ 1:5 ])
@@ -110,18 +110,17 @@ class form( tk.Tk ):
 		quitBut.grid( column = 0, row = 7, sticky = tk.W + tk.E )
 		quitBut.grid( rowspan = 2 )
 
-		kbd_bar = tk.Scale( self,
-				from_ = 0,
-				to = dm.ReadValue( self.kbd_max ),
-				resolution = 1,
-				orient = tk.HORIZONTAL,
-				tickinterval = 4,
-				variable = self.kbd_bar_val,
-				command = dm.WriteValue( self.kbd_dev,
-					self.kbd_bar_val )
-				)
-		kbd_bar.grid( column = 3,
-				row = 1,
-				sticky = tk.W + tk.E
-				)
+		#kbd_bar = tk.Scale( self,
+				#from_ = 0,
+				#to = self.kbd_dev.Read( self.kbd.maxVal ),
+				#resolution = 1,
+				#orient = tk.HORIZONTAL,
+				#tickinterval = 4,
+				#variable = self.kbd_bar_val,
+				#command = kbd_dev.Write( self.kbd_bar_val )
+				#)
+		#kbd_bar.grid( column = 3,
+				#row = 1,
+				#sticky = tk.W + tk.E
+				#)
 

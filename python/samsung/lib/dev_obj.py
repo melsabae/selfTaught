@@ -25,14 +25,18 @@ class Device:
 	def DefinePath( self ):
 		return dm.FindFile( self.name, self.dirs, self.options )
 
-	def GetPath( self ):
-		return self.Path
-
 	def Read( self ):
 		return dm.ReadValue( self.Path )
 
 	def Write( self, value ):
+		if value == 'on':
+			value = '1'
+		elif value == 'off':
+			value = '0'
 		return dm.WriteValue( self.Path, value )
+
+	def GetPath( self ):
+		return self.Path
 
 	def Off( self ):
 		return self.Write( self.offVal )
@@ -57,7 +61,7 @@ class RangeDevice( Device ):
 		with open ( readfile, 'r' ) as f:
 			return f.readline()
 
-	# override on value since on can be anything > OFF
+	# override on value since on can be anything > OFF in range devices
 	def On( self ):
 		pass
 				
@@ -65,14 +69,16 @@ class RangeDevice( Device ):
 		return dm.WriteValue( self.Path, self.maxVal )
 
 	def Up( self ):
-		if self.Read() < self.maxVal:
-			return dm.WriteValue( self.Path, int ( self.Read() + self.increment ))
+		if int( self.Read() ) < int( self.maxVal ):
+			return dm.WriteValue( self.Path,
+				int ( self.Read() + int ( self.increment )))
 		else:
 			return True
 
 	def Down( self ):
-		if self.Read() > self.minVal:
-			return dm.WriteValue( self.Path, int ( self.Read() -self.decrement ))
+		if int( self.Read() ) > int ( self.minVal ):
+			return dm.WriteValue( self.Path,
+				int ( self.Read() -int (self.decrement )))
 		else:
 			return True
 
