@@ -13,8 +13,9 @@ samsung = '/sys/devices/platform/samsung/'
 
 # base class for all devices i have on my machine, including binary
 class Device:
-	def __init__( self, name, dirs, onVal, offVal, options ):
+	def __init__( self, name, replace, dirs, onVal, offVal, options ):
 		self.name = name
+		self.replace = replace
 		self.dirs = dirs
 		self.onVal = onVal
 		self.offVal = offVal
@@ -23,12 +24,18 @@ class Device:
 		self.Path = self.DefinePath()
 
 	def DefinePath( self ):
-		return dm.FindFile( self.name, self.dirs, self.options )
+		tmp = dm.FindFile( self.name, self.dirs, self.options )
+		if self.replace == '':
+			return tmp
+		else:
+			return tmp.replace( self.name, self.replace )
 
 	def Read( self ):
-		return dm.ReadValue( self.Path )
-
+		return dm.ReadValue( self.Path ) 
 	def Write( self, value ):
+		# using this to find out when things get run
+		# namely for those things that run when instantiated
+		#print 'hi' + self.Path
 		if value == 'on':
 			value = '1'
 		elif value == 'off':
@@ -83,10 +90,12 @@ class RangeDevice( Device ):
 			return True
 
 # binary devices
-#perf = Device( 'performance_level', samsung, 'normal', 'silent', '' )
+#perf = Device( 'performance_level', '', samsung, 'normal', 'silent', '' )
+#print perf.Path
 #perf.On()
 #perf.Off()
-#bt = Device( 'name', samsung, 1, 0, 'samsung-bluetooth' )
+#bt = Device( 'name', '', samsung, 1, 0, 'samsung-bluetooth' )
+#print bt.Path
 #bt.Path = bt.Path[:-4] + 'state'
 #bt.On()
 #bt.Off()
@@ -106,3 +115,5 @@ class RangeDevice( Device ):
 #kbd_bright.RangeDefine( '0', '1', 'max_brightness', '1' )
 #mon_bright = RangeDevice( 'brightness', monitor, 100, 0, '' )
 #mon_bright.RangeDefine( '0', '1', 'max_brightness', '1' )
+#print kbd_bright.Path,  kbd_bright.maxVal
+#print mon_bright.Path,  mon_bright.maxVal
