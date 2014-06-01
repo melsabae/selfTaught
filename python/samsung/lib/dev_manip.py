@@ -22,9 +22,8 @@ def FindFileStruct( filename, searchpath, dirname ):
 # this will blow away the file's current contents, as we are currently wanting to do for hardware control
 # we use string here in the  write to make python happy, in the end the linux kernel will read it out of the file as the type it needs
 def WriteValue( device, value ):
-	value2 = str( value )
 	with open( device, 'w' ) as _file:
-		return _file.write( value2 )
+		return _file.write( str ( value ))
 
 def ReadValue( device ):
 	with open( device, 'r' ) as _file:

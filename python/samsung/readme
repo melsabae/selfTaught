@@ -1,7 +1,8 @@
-this is a little python frontend im writing for some scripts i also wrote
-allowing you to manage certain aspects of a samsung series 9
-	specifically np900x3d
-with a small program
-should be able to be used on any machine so long as the files for the hardware control (under /sys) can be found
+This is a python program written to manage certain harware features for a Samsung Series9 ultrabook, specifically NP900X3D.
 
-will need to be run as root or under sudo
+It started as a frontend for some scripts that were designed to do the same thing.
+this is a little python frontend im writing for some scripts i also wrote
+
+Current effort is to make it as generically applicable as I can figure it to be.
+
+Due to fiddling with hardware settings under /sys/, it will need root priviledges.

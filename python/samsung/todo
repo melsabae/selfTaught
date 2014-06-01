@@ -1,6 +1,6 @@
 implement exception handling, return value checking, and determining if the files found exist or are Nonetype
 
-do euid checking for root permissions, as we're touching on root's files, instead of having a popup appear after trying to execute
+do euid checking for root permissions, as we're touching on root's files, instead of having a popup appear after trying to execute - see line 17
 
 implement notifications as syscall? && find out if i can package the notify icons from the scripts into this project
 
@@ -9,4 +9,11 @@ determine method of notifying user of requisites for functioning perfectly or by
 place in GUI a label or some sort that shows current settings of each hardware device
 
 change background colors if button's device variable is Nonetype
+
+keep sliders from executing their function when instantiated
+
+check a config file in user home somewhere, instead of constantly walking the OS path - assuming the filepaths do not change (some of mine do)
+
+system calls can be made to run appropriate programs instead of writing to files (rfkill for radios, setpci/xbacklight/randrs for monitor backlight, etc) - programs should be installed if made through syscall
+
 
