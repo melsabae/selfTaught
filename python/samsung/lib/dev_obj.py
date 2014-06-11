@@ -63,7 +63,7 @@ class RangeDevice( Device ):
 	def SetMax( self, _file ):
 		readfile = dm.FindFile( _file, self.dirs, '' )
 		with open ( readfile, 'r' ) as f:
-			return f.readline()
+			return f.readline().rstrip( '\n' )
 
 	# override on value since on can be anything > OFF in range devices
 	def On( self ):

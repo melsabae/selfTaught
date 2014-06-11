@@ -104,9 +104,18 @@ if [ -x /usr/bin/dircolors ]; then
     alias calc='gnome-calculator &'
     alias headset='pactl load-module module-bluetooth-discover'
     alias lst='ll -t'
-    alias viber='/usr/share/viber/Viber &'
     alias node='nodejs'
+    alias acpi='acpi -tb'
+    alias batstat='cat /sys/class/power_supply/BAT1/uevent; acpi; uptime'
+    alias vncdeluge='vncviewer -via localhost home:1'
+    alias vdeluge='vncviewer -via localhost deluge:1'
+    alias mouserestart='sudo modprobe -r psmouse; sudo modprobe psmouse'
 fi
+
+roll()
+{
+	echo $[$RANDOM % $1]
+}
 
 # some more ls aliases
 #alias ll='ls -l'

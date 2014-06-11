@@ -1,3 +1,4 @@
+import os
 import Tkinter as tk
 import tkMessageBox
 import dev_obj as doj
@@ -6,7 +7,13 @@ class form( tk.Tk ):
 	def __init__( self, parent ):
 		tk.Tk.__init__( self, parent )
 		self.parent = parent
-		self.initialize()
+                # filthy handling, not comprehensive
+                try: 
+                    self.initialize()
+                except IOError:
+                    pass
+                except OSError:
+                    pass
 
 	def initialize( self ):
 		self.grid()
@@ -54,61 +61,77 @@ class form( tk.Tk ):
 		kbd = tk.StringVar()
 		mon = tk.StringVar()
 
-		# default values are set to my preferences
-		# should not change value upon instantiation
-		perf.set( controlOpts[ 5 ]) # silent
-		wifi.set( controlOpts[ 0 ]) # on
-		bt.set( controlOpts[ 1 ]) # off
-		batt.set( controlOpts[ 0 ]) # on
-		usb.set( controlOpts[ 1 ]) # off
+                # states hash table, keeps the stringvar.set valuables tidy
+                states = {
+                        'silent': 'silent',
+                        '0': 'off',
+                        '1': 'on'
+                        }
 
-		# inherits beginning slider value from current setting
-		# also keeps their slider bars from setting a different value upon starting program
+                # defaults each combobox to whatever machine has set
+                # also keeps devices from changing state when starting up, if the command event fires
+                perf.set( states[ perf_dev.Read() ])
+                wifi.set( states[ wifi_dev.Read() ])
+                bt.set( states[ bt_dev.Read() ])
+                batt.set( states[ batt_dev.Read() ])
+                usb.set( states[ usb_dev.Read() ])
 		kbd.set( kbd_dev.Read() )
 		mon.set( mon_dev.Read() )
+                buttons = []
 
 		# Opts are option menus, Buts are buttons, Bars are scales
 		perfOpts = tk.OptionMenu( self, perf, *controlOpts[ 5:7 ])
 		perfOpts.grid( column = 1, row = 0, sticky = tk.W + tk.E )
 		# lambda keeps Tkinter from executing only once on instantiation
 		perfBut = tk.Button( self, text = "Performance Level",
+                        state = 'disabled',
 			command = lambda:
 			perf_dev.Write( perf.get() ))
 		perfBut.grid( column = 0, row = 0, sticky = tk.W + tk.E )
+                buttons.append( perfBut )
 
 		wifiOpts = tk.OptionMenu( self, wifi, *controlOpts[ :2 ])
 		wifiOpts.grid( column = 1, row = 1, sticky = tk.W + tk.E )
-		wifiBut = tk.Button( self, text = "Wi-Fi Control", 
+		wifiBut = tk.Button( self, text = "Wi-Fi Power", 
+                        state = 'disabled',
 			command = lambda:
 			wifi_dev.Write( wifi.get() ))
 		wifiBut.grid( column = 0, row = 1, sticky = tk.W + tk.E )
+                buttons.append( wifiBut )
 
 		btOpts = tk.OptionMenu( self, bt, *controlOpts[ :2 ])
 		btOpts.grid( column = 1, row = 2, sticky = tk.W + tk.E )
-		btBut = tk.Button( self, text = "Bluetooth Control",
+		btBut = tk.Button( self, text = "Bluetooth Power",
+                        state = 'disabled',
 			command = lambda:
 			bt_dev.Write( bt.get() ))
 		btBut.grid( column = 0, row = 2, sticky = tk.W + tk.E )
+                buttons.append( btBut )
 
 		battOpts = tk.OptionMenu( self, batt, *controlOpts[ :2 ])
 		battOpts.grid( column = 1, row = 3, sticky = tk.W + tk.E )
 		battBut = tk.Button( self, text = "Battery Life Extender",
+                        state = 'disabled',
 			command = lambda:
 			batt_dev.Write( batt.get() ))
 		battBut.grid( column = 0, row = 3, sticky = tk.W + tk.E )
+                buttons.append( battBut )
 
 		usbOpts = tk.OptionMenu( self, usb, *controlOpts[ :2 ])
 		usbOpts.grid( column = 1, row = 4, sticky = tk.W + tk.E )
 		usbBut = tk.Button( self, text = "USB Charging While Off",
+                        state = 'disabled',
 			command = lambda:
 			usb_dev.Write( usb.get() ))
 		usbBut.grid( column = 0, row = 4, sticky = tk.W + tk.E )
+                buttons.append( usbBut )
 
 		kbdBut = tk.Button( self, text = "Keyboard Backlight" )
 		kbdBut.grid( column = 0, row = 5, sticky = tk.W + tk.E )
 
 		# kbd backlight seems to have a delay for a fade in/out effect, so quick fiddling with the slider may cause it to not correctly set what value you want
 		kbd_bar = tk.Scale( self,
+                        state = 'disabled',
 			from_ = 0,
 			to = kbd_dev.maxVal,
 			resolution = kbd_dev.increment,
@@ -120,11 +143,13 @@ class form( tk.Tk ):
 			kbd_dev.Write( val ))
 
 		kbd_bar.grid( column = 1, row = 5, sticky = tk.W + tk.E )
+                buttons.append( kbd_bar )
 
 		monBut = tk.Button( self, text = "Monitor Brightness" )
 		monBut.grid( column = 0, row = 6, sticky = tk.W + tk.E )
 
 		mon_bar = tk.Scale( self,
+                        state = 'disabled',
 			from_ = 0,
 			to = mon_dev.maxVal,
 			resolution = mon_dev.increment,
@@ -135,8 +160,17 @@ class form( tk.Tk ):
 			mon_dev.Write( val ))
 
 		mon_bar.grid( column = 1, row = 6, sticky = tk.W + tk.E )
+                buttons.append( mon_bar )
 
 		quitBut = tk.Button( self, text = "Quit", command = quit )
 		quitBut.grid( column = 0, row = 7, sticky = tk.W + tk.E )
 		quitBut.grid( rowspan = 2 )
+
+                # warns that controls are disabled if not root, as instantiated
+                # else enables them if user has root privs
+                if os.getuid() != 0:
+                    tkMessageBox.showwarning( 'Insufficient Priviledges.', 'Your user does not have write permission on files located in /sys. Controls have been disabled.', parent = None )
+                else:
+                    for button in buttons:
+                        button.config( state = 'normal' )
 

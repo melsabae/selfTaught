@@ -1,8 +1,7 @@
 This is a python program written to manage certain harware features for a Samsung Series9 ultrabook, specifically NP900X3D.
 
-It started as a frontend for some scripts that were designed to do the same thing.
-this is a little python frontend im writing for some scripts i also wrote
+It started as a frontend for some scripts that were designed to do the same thing. I removed those in favor of a more self-contained program. I wanted an equivalent of the program Samsung shipped with Windows 8, and allow toggling of all controls possible without moving into the BIOS.
 
-Current effort is to make it as generically applicable as I can figure it to be.
+Current effort is to make it as generically applicable as I can figure it to be, so anyone with any inclination should be able to adapt it to their system.
 
-Due to fiddling with hardware settings under /sys/, it will need root priviledges.
+Due to fiddling with hardware files under /sys/, it will need root priviledges until I'm aware of a better fashion to do so.
