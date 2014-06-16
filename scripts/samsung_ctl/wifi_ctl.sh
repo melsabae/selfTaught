@@ -17,12 +17,10 @@ notify() {
 
 turn_on() {
 	rfkill unblock wlan
-	echo 1 > $wifi_state
 }
 
 turn_off() {
 	rfkill block wlan
-	echo 0 > $wifi_state
 }
 
 toggle() {
