@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import dev_manip as dm
 
 # monitor directory is important, there are 2 directories under backlight

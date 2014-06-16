@@ -64,8 +64,11 @@ class form( tk.Tk ):
                 # states hash table, keeps the stringvar.set valuables tidy
                 states = {
                         'silent': 'silent',
+                        'performance': 'performance',
+                        'on': 'on',
+                        '1': 'on',
+                        'off': 'off',
                         '0': 'off',
-                        '1': 'on'
                         }
 
                 # defaults each combobox to whatever machine has set
