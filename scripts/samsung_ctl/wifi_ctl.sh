@@ -16,10 +16,12 @@ notify() {
 }
 
 turn_on() {
+	rfkill unblock wlan
 	echo 1 > $wifi_state
 }
 
 turn_off() {
+	rfkill block wlan
 	echo 0 > $wifi_state
 }
 
@@ -31,6 +33,7 @@ toggle() {
 	fi
 
 }
+
 if [ $(id -u) -eq 0 ]; then
 	case "$1" in
 		on)
