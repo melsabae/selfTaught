@@ -21,4 +21,4 @@ cli interface for enabling, disabling, and setting devices
 
 dynamically/statically generate a GUI for hardware found? for hardware that is controllable? instead of defining widgets constantly, maybe check a/the config file for hardware to control
 
-when wifi is written 0, htop still shows the interface being powered. rfkill takes care of the write 0/1 for power, and disabling the interface properly. should change wifi to make system call instead of direct writing for now
+when wifi is written 0, htop still shows the interface being powered. rfkill takes care of the write 0/1 for power, and disabling the interface properly. should change wifi to make system call instead of direct writing for now, alternative rfkill subdirs also contain states of 0 but do not allow writing to them, garden pathing
