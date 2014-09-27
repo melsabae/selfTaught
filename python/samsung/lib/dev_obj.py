@@ -5,6 +5,7 @@ import dev_manip as dm
 # the same hardware, which it's minimum value turns the screen off
 # instead of fully dimming it out like i want
 monitor = '/sys/class/backlight/acpi_video0/'
+abs_monitor = '/sys/devices/pci0000:00/0000:00:02:0/drm/card0/card0-eDP-1/'
 samsung = '/sys/devices/platform/samsung/'
 
 # base class for all devices i have on my machine, including binary

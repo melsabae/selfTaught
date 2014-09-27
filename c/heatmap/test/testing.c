@@ -2,16 +2,6 @@
 #include "colors.c"
 
 int main() {
-	char *string = "hello, world";
-	char *ptr = bold( string );
-
-	/*
-	printf("%s%s%s\n", bold2(), string, resetFmt( ));
-	*/
-
-	printf( "%s\n", ptr);
-
-	printf("segfault over?\n");
-
+	printf( "%s%s%s\n", BOLD, "hi", RESET);
 	return 0;
 }

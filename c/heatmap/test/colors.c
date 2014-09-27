@@ -18,17 +18,17 @@
 #define BG_WHITE	"\x1b[47m"
 #define BOLD		"\x1b[1m"
 #define RESET  		"\x1b[0m"
-#define SIZE		7
+#define SIZE		40
 
-// attempting to implement a method that returns proper strings
-// instead of handling print actions for the user, so that
-// these can be nested for bold(color(bgcolor(string))) usage scenarios
+// this mangles output, in weird ways
+// wanted to implement return string so nested calls could be made
+/*
 char *bold ( char *string2 ) {
-	char return_string[ strlen( string2 ) + SIZE ];
-	strcat( return_string, BOLD );
-	strcat( return_string, string2 );
-	return return_string;
+	char rs[( strlen( string2 ) + strlen( BOLD ) + SIZE )];
+	sprintf( rs, "%s %s", BOLD, string2);
+	return rs;
 }
+*/
 
 char *bold2( void ) {
 	return BOLD;
@@ -71,6 +71,10 @@ void magenta( char *string ) {
 
 void yellow( char *string ) {
 	printf(YELLOW "%s" RESET, string );
+}
+
+void reset( char *string ) {
+	printf( RESET );
 }
 
 // wrapper function for all above functions
