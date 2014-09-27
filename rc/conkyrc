@@ -42,13 +42,13 @@ override_utf8_locale no
 TEXT
 load $alignr $loadavg
 ${if_existing /proc/net/route wlan0}wlan0${alignr}up:${upspeed wlan0} down:${downspeed wlan0}${endif}
-cpu0 $alignr ${cpu cpu0}%
+l-cpu0 $alignr ${cpu cpu0}%
 ${cpubar cpu0}
-cpu1 $alignr ${cpu cpu1}%
+l-cpu1 $alignr ${cpu cpu1}%
 ${cpubar cpu1}
-cpu2 $alignr ${cpu cpu2}%
+l-cpu2 $alignr ${cpu cpu2}%
 ${cpubar cpu2}
-cpu3 $alignr ${cpu cpu3}%
+l-cpu3 $alignr ${cpu cpu3}%
 ${cpubar cpu3}
 mem $alignc $mem / $memmax $alignr $memperc%
 $membar
@@ -77,11 +77,12 @@ Super+e$alignr editor
 Super+r$alignr application finder
 Super+t$alignr terminal
 Super+f$alignr file manager
-Super+l$alignr lock workstation
-Super+1$alignr music browser
+Super+l$alignr lock machine
+Super+1$alignr newsreader
 Super+2$alignr instant messaging
-Super+3$alignr word processor
-Super+4$alignr spreadsheet
+Super+3$alignr office
+Super+4$alignr webdev editor
+Super+5$alignr virtualization
 PrtSc$alignr screenshot
 
 
@@ -94,4 +95,4 @@ PrtSc$alignr screenshot
 
 
 
-${image ~/Pictures/radar.jpg -p 0,695 -s 250x170 -f 20}
+${image ~/Pictures/dynamic/radar.jpg -p 0,710 -s 250x170 -f 20}
