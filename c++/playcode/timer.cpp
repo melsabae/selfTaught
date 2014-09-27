@@ -1,3 +1,4 @@
+// compiles with -std=gnu++11
 #include <iostream> // testing in console cout and cin
 #include <ctime> // clock() and CLOCKS_PER_SEC
 #include <cstdint> // specific width integer types
