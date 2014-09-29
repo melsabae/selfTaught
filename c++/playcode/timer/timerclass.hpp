@@ -1,5 +1,6 @@
-#ifndef TIMER_HPP
-#define TIMER_HPP
+// do these even work
+#ifndef TIMERCLASS_HPP
+#define TIMERCLASS_HPP
 #endif
 
 class Timer
