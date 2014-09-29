@@ -1,9 +1,5 @@
-// compiles with -std=gnu++11
-#include <iostream> // testing in console cout and cin
 #include <ctime> // clock() and CLOCKS_PER_SEC
 #include <cstdint> // specific width integer types
-
-using namespace std;
 
 class Timer
 {
@@ -32,26 +28,3 @@ class Timer
 	float Elapsed() const { return ( float )( clock() - start ) / CLOCKS_PER_SEC; }
 
 };
-
-int main(){
-	Timer t;
-	// checking the size of object, want to be small so we can make a bunch on the stack
-	//cout << sizeof( t ) << endl;
-	t.SetDuration( 5.1 );
-
-	/*
-	   unsigned var = 0 ;
-	   cout << "Enter timer amount in seconds" << endl;
-	   cin >> var;
-	   cout << "Setting timer to " << var << " seconds" << endl;
-	   t.SetDuration( var );
-	   */
-
-	while(1)
-		if( t.Elapsed() >= t.GetDuration() ){
-			cout << t.Elapsed() << endl;
-			break;
-		}
-
-	return 0;
-}
