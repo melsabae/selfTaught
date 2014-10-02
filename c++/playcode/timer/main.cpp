@@ -1,5 +1,5 @@
 #include <iostream> // testing in console cout and cin
-#include "timerclass.cpp"
+#include "timerclass.hpp"
 
 using namespace std;
 

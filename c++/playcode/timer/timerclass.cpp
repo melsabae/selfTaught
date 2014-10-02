@@ -1,30 +1,35 @@
+#include "timerclass.hpp"
 #include <ctime> // clock() and CLOCKS_PER_SEC
 #include <cstdint> // specific width integer types
 
-class Timer
-{
-	uint16_t start, duration;
+Timer :: Timer(){
+	start = clock();
+	duration = 0;
+};
 
-	public:
-	Timer(){
-		start = clock();
-		duration = 0;
-	}
+Timer :: Timer( uint16_t arg, uint16_t arg2 ){
+	start = arg;
+	duration = arg2;
+};
 
-	Timer( uint16_t arg, uint16_t arg2 ){
-		start = arg;
-		duration = arg2;
-	}
+void Timer :: Reset(){
+	start = clock();
+	duration = 0;
+};
 
-	void Reset(){
-		start = clock();
-		duration = 0;
-	}
+void Timer :: SetDuration( float arg ){
+	duration = arg;
+};
 
-	void SetDuration( float arg ){ duration = arg; }
-	uint16_t GetStart() const { return start; }
-	uint16_t GetDuration() const { return duration; }
-	// float for when i want the elapsed time to resolve to units less than a second, otherwise would be a short
-	float Elapsed() const { return ( float )( clock() - start ) / CLOCKS_PER_SEC; }
+uint16_t Timer :: GetStart() const{
+	return start;
+};
 
+uint16_t Timer :: GetDuration() const{
+	return duration;
+};
+
+// float for when i want the elapsed time to resolve to units less than a second, otherwise would be a short
+float Timer::Elapsed() const{
+	return ( float )( clock() - start ) / CLOCKS_PER_SEC;
 };
