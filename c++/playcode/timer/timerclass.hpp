@@ -1,6 +1,6 @@
 #ifndef TIMERCLASS_HPP
 #define TIMERCLASS_HPP
-#include <cstdint>
+#include <cstdint> // specific width integer types
 
 class Timer
 {

@@ -1,6 +1,5 @@
-#include "timerclass.hpp"
+#include "timerclass.hpp" // header
 #include <ctime> // clock() and CLOCKS_PER_SEC
-#include <cstdint> // specific width integer types
 
 Timer :: Timer(){
 	start = clock();
