@@ -13,6 +13,7 @@ Usage: pyrt <num> <num2> -<num3>
 # return early when there are no args provided by user
 if 1 == len( sys.argv ):
     print usage
+    sys.exit( 0 )
 
 # flags for return codes
 nan = False
