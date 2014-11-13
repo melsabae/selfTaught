@@ -1,0 +1,24 @@
+#!/usr/bin/env python2.7
+
+# quick sqrt script, multiple inputs, tried to be clever
+# no shell built ins or preloaded binaries present
+# so i made this, slapped it in /usr/local/bin and called it a day
+
+import sys
+from math import sqrt
+
+# skip the first item as it will be program's name
+for arg in sys.argv[ 1: ]:
+        try:
+            if arg[ 0 ] == '-':
+                arg = float( arg[ 1: ])
+                print str( sqrt( arg )) + "i"
+                continue
+            elif arg[ 0 ] == '+':
+                arg = float( arg[ 1: ])
+            else:
+                arg = float( arg )
+
+            print sqrt( arg )
+        except ValueError:
+            print "'" + str( arg ) + "': " + "NaaN is delicious"
