@@ -1,10 +1,8 @@
 #!/usr/bin/env python2.7
 
-# quick sqrt script, multiple inputs, tried to be clever
-# no shell built ins or preloaded binaries present
-# so i made this, slapped it in /usr/local/bin and called it a day
+# quick sqrt script, multiple inputs
 
-from sys import argv
+import sys
 from math import sqrt
 
 usage = """
@@ -12,21 +10,42 @@ Python Square Root script
 Usage: pyrt <num> <num2> -<num3>
 """
 
-if 1 == len( argv ):
+# return early when there are no args provided by user
+if 1 == len( sys.argv ):
     print usage
 
+# flags for return codes
+nan = False
+unk = False
+
 # skip the first item as it will be program's name
-for arg in argv[ 1: ]:
+for arg in sys.argv[ 1: ]:
     try:
-        if arg[ 0 ] == '-':
+        # check for negative sign, print imaginary number
+        if '-' == arg[ 0 ]:
             num = float( arg[ 1: ])
-            print arg + ": " + str( sqrt( num )) + "i"
+            print arg + ": ", sqrt( num ), "i"
             continue
-        elif arg[ 0 ] == '+':
+        # check for positive sign, ignore it
+        elif '+' == arg[ 0 ]:
             num = float( arg[ 1: ])
         else:
             num = float( arg )
 
-        print arg + ": " + str( sqrt( num ))
+        print arg + ": ", sqrt( num )
+
     except ValueError:
-        print "'" + arg + ": " + "NaaN is delicious"
+        nan = True
+        print arg + ": Could not be cast to a numerical type."
+
+    except:
+        unk = True
+        print arg + ": Unkown error occured with this input:", sys.exc_info()[ 0 ]
+
+if True == unk:
+    sys.exit( 2 )
+
+if True == nan:
+    sys.exit( 1 )
+
+sys.exit( 0 )
