@@ -7,18 +7,26 @@
 from sys import argv
 from math import sqrt
 
+usage = """
+Python Square Root script
+Usage: pyrt <num> <num2> -<num3>
+"""
+
+if 1 == len( argv ):
+    print usage
+
 # skip the first item as it will be program's name
 for arg in argv[ 1: ]:
-        try:
-            if arg[ 0 ] == '-':
-                num = float( arg[ 1: ])
-                print arg + ": " + str( sqrt( num )) + "i"
-                continue
-            elif arg[ 0 ] == '+':
-                num = float( arg[ 1: ])
-            else:
-                num = float( arg )
+    try:
+        if arg[ 0 ] == '-':
+            num = float( arg[ 1: ])
+            print arg + ": " + str( sqrt( num )) + "i"
+            continue
+        elif arg[ 0 ] == '+':
+            num = float( arg[ 1: ])
+        else:
+            num = float( arg )
 
-            print arg + ": " + str( sqrt( num ))
-        except ValueError:
-            print "'" + arg + ": " + "NaaN is delicious"
+        print arg + ": " + str( sqrt( num ))
+    except ValueError:
+        print "'" + arg + ": " + "NaaN is delicious"
