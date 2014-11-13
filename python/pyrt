@@ -4,21 +4,21 @@
 # no shell built ins or preloaded binaries present
 # so i made this, slapped it in /usr/local/bin and called it a day
 
-import sys
+from sys import argv
 from math import sqrt
 
 # skip the first item as it will be program's name
-for arg in sys.argv[ 1: ]:
+for arg in argv[ 1: ]:
         try:
             if arg[ 0 ] == '-':
-                arg = float( arg[ 1: ])
-                print str( sqrt( arg )) + "i"
+                num = float( arg[ 1: ])
+                print arg + ": " + str( sqrt( num )) + "i"
                 continue
             elif arg[ 0 ] == '+':
-                arg = float( arg[ 1: ])
+                num = float( arg[ 1: ])
             else:
-                arg = float( arg )
+                num = float( arg )
 
-            print sqrt( arg )
+            print arg + ": " + str( sqrt( num ))
         except ValueError:
-            print "'" + str( arg ) + "': " + "NaaN is delicious"
+            print "'" + arg + ": " + "NaaN is delicious"
