@@ -83,9 +83,12 @@ if [ -x /usr/bin/dircolors ]; then
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    alias grep='grep --color'
-    alias fgrep='fgrep --color'
-    alias egrep='egrep --color'
+    # color output even through pipes
+    alias grep='grep --color=always'
+    alias fgrep='fgrep --color=always'
+    alias egrep='egrep --color=always'
+    # less strips color sometimes
+    alias less='less -R'
     
     alias pico='vim'
     alias nano='vim'
@@ -94,28 +97,20 @@ if [ -x /usr/bin/dircolors ]; then
     alias vm='vim'
     alias im='vim'
     alias pythong='py'
-    alias py='python'
+    alias py='python2.7'
     alias cls='clear; ls'
     alias cll='clear; ll'
     alias lsl='ls -1 | wc -l'
     alias sabaservsensors="ssh saba@sabaserv.x64.me 'bash -ic sensors'"
     alias gcc='gcc -mtune=native -Wall'
-    alias updatelocalsite='sudo rm -irf /var/www/*; sudo cp -R ~/website/masjid/* /var/www'
     alias calc='gnome-calculator &'
     alias headset='pactl load-module module-bluetooth-discover'
     alias lst='ll -t'
     alias node='nodejs'
     alias acpi='acpi -tb'
-    alias batstat='cat /sys/class/power_supply/BAT1/uevent; acpi; uptime'
     alias vncdeluge='vncviewer -via localhost home:1'
     alias vdeluge='vncviewer -via localhost deluge:1'
-    alias mouserestart='sudo modprobe -r psmouse; sudo modprobe psmouse'
 fi
-
-roll()
-{
-	echo $[$RANDOM % $1]
-}
 
 # some more ls aliases
 #alias ll='ls -l'
