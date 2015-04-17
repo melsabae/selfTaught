@@ -101,15 +101,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias cls='clear; ls'
     alias cll='clear; ll'
     alias lsl='ls -1 | wc -l'
-    alias sabaservsensors="ssh saba@sabaserv.x64.me 'bash -ic sensors'"
     alias gcc='gcc -mtune=native -Wall'
     alias calc='gnome-calculator &'
-    alias headset='pactl load-module module-bluetooth-discover'
     alias lst='ll -t'
     alias node='nodejs'
-    alias acpi='acpi -tb'
-    alias vncdeluge='vncviewer -via localhost home:1'
-    alias vdeluge='vncviewer -via localhost deluge:1'
 fi
 
 # some more ls aliases
