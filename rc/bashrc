@@ -90,8 +90,6 @@ if [ -x /usr/bin/dircolors ]; then
     # less strips color sometimes
     alias less='less -R'
     
-    alias pico='vim'
-    alias nano='vim'
     alias vim.tiny='vim'
     alias vi='vim'
     alias vm='vim'
