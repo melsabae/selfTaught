@@ -1,0 +1,49 @@
+URxvt.scrollBar: false
+URxvt.urgentOnBell: true
+
+URxvt.depth: 32
+!URxvt.background: [50]#131313
+
+URxvt.perl-lib: /usr/lib/urxvt/perl
+URxvt.perl-ext-common: default,matcher,vtwheel
+URxvt.matcher.pattern.1: \\bwww\\.[\\w-]\\.[\\w./?&@#-].[\\w/-]
+URxvt.matcher.button: 3
+URxvt.url-launcher: /usr/bin/firefox
+URxvt.colorUL: #ffb00
+
+URxvt.font: xft:Envy Code R:bold:pixelsize=20
+URxvt.letterSpace: 4
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.hintstyle: hintslight
+Xft.rgba: rgb
+Xft.lcdfilter: lcddefault
+Xft.autohint: true
+
+URxvt.foreground: #f2f2f2
+URxvt.background: #101010
+
+URxvt.color0:    #6c6c6c
+URxvt.color8:    #747474
+
+URxvt.color1:    #e9897c
+URxvt.color9:    #f99286
+
+URxvt.color2:    #b6e77d
+URxvt.color10:    #c3f786
+
+URxvt.color3:    #ecebbe
+URxvt.color11:    #fcfbcc
+
+URxvt.color4:    #a9cdeb
+URxvt.color12:    #b6defb
+
+URxvt.color5:    #ea96eb
+URxvt.color13:    #fba1fb
+
+URxvt.color6:    #c9caec
+URxvt.color14:    #d7d9fc
+
+URxvt.color7:    #f2f2f2
+URxvt.color15:    #e2e2e2
