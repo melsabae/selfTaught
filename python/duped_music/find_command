@@ -1,1 +1,3 @@
-find ./ -iname '*.ac3'  -or -iname '*.flac'  -or -iname '*.m3u'  -or -iname '*.m4a'  -or -iname '*.mp3'  -or -iname '*.ogg' | sort > ~/musicfound
+#!/bin/bash
+
+find -L ~/ -type f -iname '*.ac3'  -or -iname '*.flac'  -or -iname '*.m3u'  -or -iname '*.m4a'  -or -iname '*.mp3'  -or -iname '*.ogg' | sort > musicfound
