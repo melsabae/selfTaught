@@ -1,10 +1,17 @@
 #!/usr/bin/env python2.7
+import os
 
-dupes = open("dupes", "r")
-dupes2 = open("dupes", "r")
+dupes = open(
+        os.path.expanduser("~/dupes"),
+        'r')
+dupes2 = open(
+        os.path.expanduser("~/dupes"),
+        'r')
 
 # file where duplicates will be recorded with hashes and filenames
-work = open("work_dupes", "w")
+work = open(
+        os.path.expanduser("~/work_dupes"),
+        "w")
 
 # increment, otherwise it would check the same line against itself
 dupes2.readline()
