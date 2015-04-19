@@ -1,19 +1,11 @@
 #!/usr/bin/env python2.7
 import os
 
-<<<<<<< HEAD
 dupes = open("summed", 'r')
 dupes2 = open("summed",'r')
 
 # file where duplicates will be recorded with hashes and filenames
 work = open("worked_hashes", "w")
-=======
-dupes = open("hashed", 'r')
-dupes2 = open("hashed",'r')
-
-# file where duplicates will be recorded with hashes and filenames
-work = open("matched_hashes", "w")
->>>>>>> bd292a3b0039aeafae555716848d5e0a6854eddd
 
 # increment, otherwise it would check the same line against itself
 dupes2.readline()
