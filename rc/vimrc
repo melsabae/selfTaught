@@ -54,6 +54,8 @@ set ruler
 set hlsearch
 set lazyredraw
 set cindent
+set cursorline
+set cursorcolumn
 
 
 set foldmethod=indent
