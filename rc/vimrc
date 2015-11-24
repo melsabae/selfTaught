@@ -55,6 +55,8 @@ set hlsearch
 set lazyredraw
 set cindent
 set cursorline
+set shiftwidth=2
+set expandtab
 set cursorcolumn
 
 
