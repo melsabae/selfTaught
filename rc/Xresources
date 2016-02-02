@@ -10,7 +10,7 @@ URxvt.matcher.button: 3
 URxvt.url-launcher: /usr/bin/firefox
 URxvt.colorUL: #ffb00
 
-URxvt.font: xft:Envy Code R:bold:pixelsize=25
+URxvt.font: xft:Envy Code R:bold:pixelsize=18
 URxvt.letterSpace: 2
 Xft.dpi: 96
 Xft.antialias: true
