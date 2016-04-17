@@ -7,7 +7,8 @@ URxvt.perl-lib: /usr/lib/urxvt/perl
 URxvt.perl-ext-common: default,matcher,vtwheel,clipboard
 URxvt.matcher.pattern.1: \\bwww\\.[\\w-]\\.[\\w./?&@#-].[\\w/-]
 URxvt.matcher.button: 3
-URxvt.url-launcher: /usr/bin/firefox
+URxvt.url-launcher: /usr/bin/qutebrowser
+
 URxvt.colorUL: #ffb00
 
 URxvt.font: xft:Envy Code R:bold:pixelsize=18
