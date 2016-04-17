@@ -81,7 +81,7 @@ tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
     --tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
-    tags[s] = awful.tag({ "p ", "s ", "t ", "q "}, s, layouts[1])
+    tags[s] = awful.tag({ "p ", "s ", "t "}, s, layouts[1])
 end
 -- }}}
 
@@ -99,8 +99,9 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
+--mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     --menu = mymainmenu })
+mylauncher = awful.widget.launcher({ menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
