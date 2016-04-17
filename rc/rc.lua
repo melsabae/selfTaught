@@ -3,6 +3,7 @@ local gears = require("gears")
 local awful = require("awful")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
+local battery = require("battery")
 
 awful.util.spawn_with_shell("xcompmgr -cF &")
 -- Widget and layout library
@@ -44,6 +45,7 @@ beautiful.init("~/.config/awesome/themes/zenburn/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
+browser = "qutebrowser"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -94,8 +96,9 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
+mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu },
+                                    { "urxvt", terminal },
+                                    { "browser", browser}
                                   }
                         })
 
@@ -109,6 +112,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
+mybattery = wibox.widget.textbox()
 mytextclock = awful.widget.textclock()
 
 -- Create a wibox for each screen and add it
@@ -190,6 +194,7 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(mybattery)
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
@@ -450,3 +455,8 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+mybattery_timer = timer({timeout = 1})
+mybattery_timer:connect_signal("timeout", function()
+  mybattery:set_text(batteryInfo("BAT0"))
+end)
+mybattery_timer:start()
