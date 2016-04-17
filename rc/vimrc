@@ -18,50 +18,65 @@ runtime! archlinux.vim
 " according to the detected filetype.
 if has("autocmd")
   filetype plugin indent on
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " remember place
 endif
 
 " The following are commented out as they cause vim to behave a lot
 " differently from regular Vi. They are highly recommended though.
 set background=dark
 set autoindent
-"set showcmd		" Show (partial) command in status line.
+set showcmd		" Show (partial) command in status line.
 set showmatch		" Show matching brackets.
 set ignorecase		" Do case insensitive matching
 set smartcase		" Do smart case matching
 set incsearch		" Incremental search
 "set autowrite		" Automatically save before commands like :next and :make
+"set ruler
 set tabstop=2
 set smarttab
 set autoread
-set number
-set scrolloff=9999
+set number "line numbers
+set scrolloff=50 "scroll follows cursor
 set wrap
 set showbreak=...
-set ruler
 set hlsearch
 set lazyredraw
+set ttyfast
 set shiftwidth=2
 set expandtab
-set cursorline
-set cursorcolumn
+set cursorline "cursor tracking"
+set cursorcolumn " cursor tracking"
+"set omnifunc=no
+
 filetype on
 syntax on
+let &titlestring = "{" .hostname(). ": vim(" .expand("%:p"). ")}".expand($USER).""
+set title
 
+"autocomplete menu options
+set completeopt=menuone,preview
+
+" code folding options
 set foldmethod=indent
-set foldnestmax=10
+"set foldnestmax=10
 set nofoldenable
 set foldlevel=1
 set pastetoggle=<F2>
-"set omnifunc=no
 
+"vim-plug calls
 call plug#begin()
 Plug 'https://github.com/scrooloose/syntastic.git'
 Plug 'https://github.com/vim-airline/vim-airline.git'
 Plug 'https://github.com/jiangmiao/auto-pairs.git'
 call plug#end()
 
+"vim airline status bar
 set laststatus=2
 let g:airline_theme='base16'
+
+
+" YCM options
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
+
