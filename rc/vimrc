@@ -35,7 +35,7 @@ set incsearch		" Incremental search
 set tabstop=2
 set smarttab
 set autoread
-"set number "line numbers
+set number "line numbers
 set relativenumber
 set scrolloff=50 "scroll follows cursor
 set wrap
