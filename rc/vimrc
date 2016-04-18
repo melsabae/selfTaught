@@ -68,15 +68,15 @@ call plug#begin()
 Plug 'https://github.com/scrooloose/syntastic.git'
 Plug 'https://github.com/vim-airline/vim-airline.git'
 Plug 'https://github.com/jiangmiao/auto-pairs.git'
+Plug 'https://github.com/tpope/vim-fugitive.git'
 call plug#end()
 
 "vim airline status bar
 set laststatus=2
-let g:airline_theme='base16'
+let g:airline_theme='raven'
 
 
 " YCM options
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
-
