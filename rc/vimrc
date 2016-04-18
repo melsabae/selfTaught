@@ -35,7 +35,8 @@ set incsearch		" Incremental search
 set tabstop=2
 set smarttab
 set autoread
-set number "line numbers
+"set number "line numbers
+set relativenumber
 set scrolloff=50 "scroll follows cursor
 set wrap
 set showbreak=...
@@ -69,6 +70,10 @@ Plug 'https://github.com/scrooloose/syntastic.git'
 Plug 'https://github.com/vim-airline/vim-airline.git'
 Plug 'https://github.com/jiangmiao/auto-pairs.git'
 Plug 'https://github.com/tpope/vim-fugitive.git'
+Plug 'https://github.com/scrooloose/nerdtree.git'
+Plug 'https://github.com/majutsushi/tagbar.git'
+Plug 'https://github.com/easymotion/vim-easymotion.git'
+Plug 'https://github.com/easymotion/vim-easymotion.git'
 call plug#end()
 
 "vim airline status bar
@@ -80,3 +85,6 @@ let g:airline_theme='raven'
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
+
+nmap tb :TagbarOpen fj<CR>
+nmap tcb :TagbarClose<CR>
