@@ -23,39 +23,38 @@ endif
 
 " The following are commented out as they cause vim to behave a lot
 " differently from regular Vi. They are highly recommended though.
-set background=dark
-set autoindent
-set showcmd		" Show (partial) command in status line.
-set showmatch		" Show matching brackets.
-set ignorecase		" Do case insensitive matching
-set smartcase		" Do smart case matching
-set incsearch		" Incremental search
-"set autowrite		" Automatically save before commands like :next and :make
-"set ruler
-set tabstop=2
-set smarttab
-set autoread
-set number "line numbers
-set relativenumber
-set scrolloff=50 "scroll follows cursor
-set wrap
-set showbreak=...
-set hlsearch
-set lazyredraw
-set ttyfast
-set shiftwidth=2
-set expandtab
+syntax on
+
+set t_Co=256 "256 color mode
+set number "set all line numbers
+set relativenumber "lines relatively numbered from current
 "set cursorline "cursor tracking"
 "set cursorcolumn " cursor tracking"
+"set background=dark
+"colorscheme default
+"set ruler
+"set wrap
+"set showbreak=...
+"set showcmd		" Show (partial) command in status line.
+set showmatch		" Show matching brackets.
+set hlsearch
+
+set autoindent
+set tabstop=2 "heresy
+set softtabstop=2
+set shiftwidth=2
+"set expandtab
+set shiftround
+set smarttab "tabs at the beginning, spaces in the not beginning of a line
+
+set ignorecase		" Do case insensitive matching
+set incsearch		" Incremental search
+"set autowrite		" Automatically save before commands like :next and :make
+set autoread
+set scrolloff=50 "scroll follows cursor
+set lazyredraw
+set ttyfast
 "set omnifunc=no
-
-filetype on
-syntax on
-"let &titlestring = "{" .hostname(). ": vim(" .expand("%:p"). ")}".expand($USER).""
-"set title
-
-"autocomplete menu options
-set completeopt=menuone,preview
 
 " code folding options
 set foldenable
@@ -63,7 +62,13 @@ set foldmethod=syntax "indent"
 set foldlevelstart=10
 "set foldnestmax=10
 set foldlevel=1
-set pastetoggle=<F2>
+
+"let &titlestring = "{" .hostname(). ": vim(" .expand("%:p"). ")}".expand($USER).""
+"set title
+
+"autocomplete menu options
+set completeopt=menuone,preview
+
 
 "vim-plug calls
 call plug#begin()
@@ -75,6 +80,7 @@ Plug 'https://github.com/scrooloose/nerdtree.git'
 Plug 'https://github.com/majutsushi/tagbar.git'
 Plug 'https://github.com/vim-scripts/YankRing.vim.git'
 Plug 'https://github.com/joequery/Stupid-EasyMotion.git'
+Plug 'https://github.com/godlygeek/tabular.git'
 call plug#end()
 
 "vim airline status bar
@@ -93,3 +99,5 @@ let g:yankring_history_dir = '~/.vim/plugged/YankRing.vim'
 nmap tb :TagbarOpen fj<CR>
 nmap ttb :TagbarToggle<CR>
 nmap yr :YRShow<CR>
+set pastetoggle=<F2>
+
