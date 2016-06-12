@@ -124,9 +124,44 @@ int main()
 	printf("Version #: %X\n", due_usb.desc_dev.bcdDevice);
 
 	// these values are offsets into the descriptor but they are empty
-	//printf("%u\n", due_usb.desc_dev.iManufacturer);
-	//printf("%u\n", due_usb.desc_dev.iProduct);
-	//printf("%u\n", due_usb.desc_dev.iSerialNumber);
+	unsigned char description[25];
+	retval = libusb_get_string_descriptor_ascii(due_usb.dev,
+			due_usb.desc_dev.iManufacturer, description, 25);
+
+	if(retval != LIBUSB_SUCCESS)
+	{
+		printf("%s\r\n", "failed to get iManufacturer name");
+		return -1;
+	}
+	
+	printf("%s%s\r\n", "Manufacturer: ", description);
+
+	retval = libusb_get_string_descriptor_ascii(due_usb.dev,
+			due_usb.desc_dev.iProduct, description, 25);
+
+	if(retval != LIBUSB_SUCCESS)
+	{
+		printf("%s\r\n", "failed to get iManufacturer name");
+		return -1;
+	}
+	
+	printf("%s%s\r\n", "iProduct: ", description);
+	
+	retval = libusb_get_string_descriptor_ascii(due_usb.dev,
+			due_usb.desc_dev.iSerialNumber, description, 25);
+
+	if(retval != LIBUSB_SUCCESS)
+	{
+		printf("%s\r\n", "failed to get iManufacturer name");
+		return -1;
+	}
+
+	printf("%s%s\r\n", "Manufacturer: ", description);
+	
+	
+	printf("%u\n", due_usb.desc_dev.iManufacturer);
+	printf("%u\n", due_usb.desc_dev.iProduct);
+	printf("%u\n", due_usb.desc_dev.iSerialNumber);
 
 	struct libusb_config_descriptor *conf_desc = NULL;
 	const struct libusb_interface *_if = NULL;
