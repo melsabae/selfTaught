@@ -81,31 +81,23 @@ int main()
 
 	retval = libusb_get_device_speed(due_usb.dev);
 
-	if(retval != LIBUSB_SUCCESS)
+	switch(retval)
 	{
-		printf("%s\r\n", "failed to get USB device speed.");
-	}
-
-	if(retval == LIBUSB_SUCCESS)
-	{
-		switch(retval)
-		{
-			case LIBUSB_SPEED_LOW:
-				printf("%s\n", "low speed 1.5 Mbps");
-				break;
-			case LIBUSB_SPEED_FULL:
-				printf("%s\n", "full speed 12 Mbps");
-				break; case LIBUSB_SPEED_HIGH:
+		case LIBUSB_SPEED_LOW:
+			printf("%s\n", "low speed 1.5 Mbps");
+			break;
+		case LIBUSB_SPEED_FULL:
+			printf("%s\n", "full speed 12 Mbps");
+			break; case LIBUSB_SPEED_HIGH:
 				printf("%s\n", "high speed 480 Mbps");
-				break;
-			case LIBUSB_SPEED_SUPER:
-				printf("%s\n", "super speed 5 Gbps");
-				break;
-			case LIBUSB_SPEED_UNKNOWN:
-			default:
-				printf("%s\n", "unknown speed reported");
-				break;
-		}
+			break;
+		case LIBUSB_SPEED_SUPER:
+			printf("%s\n", "super speed 5 Gbps");
+			break;
+		case LIBUSB_SPEED_UNKNOWN:
+		default:
+			printf("%s\n", "unknown speed reported");
+			break;
 	}
 
 	retval = libusb_set_auto_detach_kernel_driver(due_usb.handle, true);
@@ -116,17 +108,27 @@ int main()
 		return -1;
 	}
 
-	printf("%s", "USB device speed: ");
-
 	printf("USB version: %X\n", due_usb.desc_dev.bcdUSB);
 	printf("Vendor ID: %#.4X\n", due_usb.desc_dev.idVendor);
 	printf("Product ID: %#.4X\n", due_usb.desc_dev.idProduct);
 	printf("Version #: %X\n", due_usb.desc_dev.bcdDevice);
 
 	// these values are offsets into the descriptor but they are empty
-	//printf("%u\n", due_usb.desc_dev.iManufacturer);
-	//printf("%u\n", due_usb.desc_dev.iProduct);
-	//printf("%u\n", due_usb.desc_dev.iSerialNumber);
+	unsigned char description[25];
+	libusb_get_string_descriptor_ascii(due_usb.handle,
+			due_usb.desc_dev.iManufacturer, description, 25);
+
+	printf("%s%s\r\n", "Manufacturer: ", description);
+
+	libusb_get_string_descriptor_ascii(due_usb.handle,
+			due_usb.desc_dev.iProduct, description, 25);
+
+	printf("%s%s\r\n", "iProduct: ", description);
+
+	libusb_get_string_descriptor_ascii(due_usb.handle,
+			due_usb.desc_dev.iSerialNumber, description, 25);
+
+	printf("%s%s\r\n", "iSerialNumber: ", description);
 
 	struct libusb_config_descriptor *conf_desc = NULL;
 	const struct libusb_interface *_if = NULL;
@@ -290,18 +292,18 @@ int main()
 		libusb_bulk_transfer(due_usb.handle,
 				LIBUSB_ENDPOINT_OUT | due_usb.bulk.addr_ep_out,
 				(unsigned char *) buffer, 64, &transferred, due_usb.bulk.bInterval);
-		
+
 		libusb_bulk_transfer(due_usb.handle,
 				LIBUSB_ENDPOINT_IN | due_usb.bulk.addr_ep_in,
 				(unsigned char *) buffer, 64, &transferred, due_usb.bulk.bInterval);
 
-	//	libusb_interrupt_transfer(due_usb.handle,
-	//			LIBUSB_ENDPOINT_OUT | due_usb.intrpt.addr_ep_out,
-	//			(unsigned char *) buffer, 64, &transferred, due_usb.intrpt.bInterval);
+		//	libusb_interrupt_transfer(due_usb.handle,
+		//			LIBUSB_ENDPOINT_OUT | due_usb.intrpt.addr_ep_out,
+		//			(unsigned char *) buffer, 64, &transferred, due_usb.intrpt.bInterval);
 
-	//	libusb_interrupt_transfer(due_usb.handle,
-	//			LIBUSB_ENDPOINT_IN | due_usb.intrpt.addr_ep_in,
-	//			(unsigned char *) buffer, 64, &transferred, due_usb.intrpt.bInterval);
+		//	libusb_interrupt_transfer(due_usb.handle,
+		//			LIBUSB_ENDPOINT_IN | due_usb.intrpt.addr_ep_in,
+		//			(unsigned char *) buffer, 64, &transferred, due_usb.intrpt.bInterval);
 
 		printf("in: %s\n", buffer);
 
