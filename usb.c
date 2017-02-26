@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <inttypes.h>
+#include <string.h>
 #include <libusb-1.0/libusb.h>
 
 #define VENDOR_ID			0x03EB // atmel mfr default
 #define PRODUCT_ID		0x2423 // atmel vendor default
+#define MFG_STRING    "Mohammad El-Sabae"
+#define PROD_STRING   "libusb"
 
 char buffer[64];
 uint64_t counter = 0;
@@ -28,53 +31,95 @@ typedef struct
 	TRANSFER bulk;
 	TRANSFER iso;
 	TRANSFER intrpt;
-} DUE_USB;
+} VENDOR_USB;
+
+bool query_device_is_ours(libusb_device *dev);
+void open_device_and_fill_properties(VENDOR_USB *dev);
+
+bool usb_device_is_ours(libusb_device *dev)
+{
+	if(dev == NULL)
+	{
+		return false;
+	}
+
+	struct libusb_device_descriptor desc;
+	libusb_device_handle *handle = NULL;
+	bool ours = true;
+	unsigned char s_cmp[126] = "NOT OURS";
+	ssize_t retval = libusb_get_device_descriptor(dev, &desc);
+
+	if(retval != LIBUSB_SUCCESS)
+	{
+		return false;
+	}
+
+	if(!(desc.idVendor == VENDOR_ID || desc.idProduct == PRODUCT_ID))
+	{
+		return false;
+	}
+
+	retval = libusb_open(dev, &handle);
+
+	if(retval != LIBUSB_SUCCESS)
+	{
+		return false;
+	}
+
+	libusb_get_string_descriptor_ascii(handle, desc.iManufacturer,
+			s_cmp, 126);
+
+	if(strcmp((char *) s_cmp, MFG_STRING) != 0)
+	{
+		ours = false;
+	}
+
+	libusb_get_string_descriptor_ascii(handle, desc.iProduct,
+			s_cmp, 126);
+
+	if(strcmp((char *) s_cmp, PROD_STRING) != 0)
+	{
+		ours = false;
+	}
+
+	libusb_close(handle);
+	return ours;
+}
+
+void usb_device_and_fill_properties(VENDOR_USB *dev)
+{
+	(void) dev;
+
+	libusb_open(&dev->dev, &dev->handle);
+}
 
 int main()
 {
 	libusb_init(NULL);
 	libusb_set_debug(NULL, LIBUSB_LOG_LEVEL_WARNING);
 
-	int retval;
+	ssize_t retval;
 	libusb_device **list = NULL;
-	DUE_USB due_usb;
+	VENDOR_USB due_usb;
 	due_usb.dev = NULL;
 	due_usb.handle = NULL;
 
-	retval = libusb_get_device_list(NULL,  &list);
+	retval = libusb_get_device_list(NULL, &list);
 
-	if(retval < LIBUSB_SUCCESS)
+	if(retval <= LIBUSB_SUCCESS)
 	{
 		printf("%s\n", "failed to get device list or no devices available");
 		libusb_free_device_list(list, true);
 		return -1;
 	}
 
-	for(uint8_t i = 0; i < retval; i++)
+	for(int8_t i = retval - 1; i >= 0; i--)
 	{
-		retval = libusb_get_device_descriptor(list[i], &due_usb.desc_dev);
-
-		if(retval != LIBUSB_SUCCESS)
+		printf("%s%u\r\n", "device: ", i);
+		if(usb_device_is_ours(list[i]))
 		{
-			printf("%s%u\r\n", "failed to open device ", i);
-			libusb_free_device_list(list, true);
-			return -1;
-		}
-
-		if(due_usb.desc_dev.idVendor == VENDOR_ID &&
-				due_usb.desc_dev.idProduct == PRODUCT_ID)
-		{
+			printf("%s%u\r\n", "match: ", i);
 			due_usb.dev = list[i];
-			retval = libusb_open(list[i], &due_usb.handle);
-			libusb_free_device_list(list, true);
-
-			if(retval != LIBUSB_SUCCESS)
-			{
-				libusb_close(due_usb.handle);
-				printf("%s\r\n", "failed to open vendor/product.");
-				return -1;
-			}
-
 			break;
 		}
 	}
@@ -114,21 +159,6 @@ int main()
 	printf("Version #: %X\n", due_usb.desc_dev.bcdDevice);
 
 	// these values are offsets into the descriptor but they are empty
-	unsigned char description[25];
-	libusb_get_string_descriptor_ascii(due_usb.handle,
-			due_usb.desc_dev.iManufacturer, description, 25);
-
-	printf("%s%s\r\n", "Manufacturer: ", description);
-
-	libusb_get_string_descriptor_ascii(due_usb.handle,
-			due_usb.desc_dev.iProduct, description, 25);
-
-	printf("%s%s\r\n", "iProduct: ", description);
-
-	libusb_get_string_descriptor_ascii(due_usb.handle,
-			due_usb.desc_dev.iSerialNumber, description, 25);
-
-	printf("%s%s\r\n", "iSerialNumber: ", description);
 
 	struct libusb_config_descriptor *conf_desc = NULL;
 	const struct libusb_interface *_if = NULL;
