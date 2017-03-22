@@ -7,6 +7,7 @@
 #include <time.h>
 #include <mqueue.h>
 #include <string.h>
+#include <errno.h>
 
 #define THREAD_POOL_NAME "/thread_pool_test"
 #define NUM_THREADS 8
@@ -117,8 +118,18 @@ int main ()
 
   while (keep_running)
   {
-    ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
+		// just messing about
+		//ret_val = pause();
 
+		//if(0 != ret_val)
+		//{
+		//	if(errno != EINTR)
+		//	{
+		//		perror("pause: ");
+		//	}
+		//}
+
+    ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
     if (0 != ret_val)
     {
       perror ("mq_send: ");
