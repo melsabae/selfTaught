@@ -8,6 +8,9 @@
 #include <mqueue.h>
 #include <string.h>
 #include <errno.h>
+#include <stddef.h>
+#include <assert.h>
+#include <inttypes.h>
 
 #define THREAD_POOL_NAME "/thread_pool_test"
 #define NUM_THREADS 8
@@ -17,8 +20,13 @@ int caught_signal = 0;
 mqd_t prio_queue;
 
 pthread_t thread_pool[NUM_THREADS];
-int thread_args[NUM_THREADS] = { 0 };
-int thread_posi[NUM_THREADS] = { 0 };
+
+typedef struct
+{
+  ptrdiff_t thread_num;
+  ssize_t len_payload;
+  void *payload;
+} thread_util;
 
 void signal_handler (int signal)
 {
@@ -26,24 +34,67 @@ void signal_handler (int signal)
   caught_signal = signal;
 }
 
-void cleanup (void *arg)
+void cleanup_thread_util (void *arg)
 {
-  const int thread_num = *(int *) (arg);
+  if (NULL == arg)
+  {
+    return;
+  }
 
-  printf ("cleanup thread: %d at %d\n", thread_num, thread_posi[thread_num]);
+  thread_util *util = arg;
+
+  if (NULL != util->payload)
+  {
+		uint8_t* payload = util->payload;
+
+    printf ("%ld %s: ", util->thread_num, "payload");
+    for (ssize_t i = 0; i < util->len_payload; i++)
+    {
+      printf ("%.2X", payload[i]);
+    }
+    puts ("");
+
+    free (util->payload);
+  }
 }
 
 void *loop (void *arg)
 {
   if (NULL == arg)
   {
-    pthread_exit (NULL);
+    //pthread_exit(NULL);
   }
 
-  const int thread_num = *(int *) (arg);
-  char message[8192] = { 0 };
-  ssize_t len = 0;
   int ret_val = 0;
+
+  thread_util *util = calloc (1, sizeof (thread_util));
+
+  util->thread_num = 0;
+  util->payload = NULL;
+
+  {
+    struct mq_attr attr;
+
+    memset (&attr, 0, sizeof (attr));
+
+    ret_val = mq_getattr (prio_queue, &attr);
+    util->payload = calloc (1, attr.mq_msgsize);
+
+    if (NULL == util->payload)
+    {
+      pthread_exit (NULL);
+    }
+  }
+
+  char *message = util->payload;
+
+  for (size_t i = 0; i < NUM_THREADS; i++)
+  {
+    if (0 != pthread_equal (pthread_self (), thread_pool[i]))
+    {
+      util->thread_num = i;
+    }
+  }
 
   ret_val = pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, NULL);
   if (0 != ret_val)
@@ -59,33 +110,22 @@ void *loop (void *arg)
     pthread_exit (NULL);
   }
 
-  pthread_cleanup_push (cleanup, arg);
+  pthread_cleanup_push (cleanup_thread_util, util);
 
   while (true)
   {
-    thread_posi[thread_num] = 1;
-    len = mq_receive (prio_queue, message, 8192, NULL);
-    thread_posi[thread_num] = 2;
+    util->len_payload = mq_receive (prio_queue, message, 8192, NULL);
 
-    if (len > 0)
+    if (util->len_payload > 0)
     {
-      thread_posi[thread_num] = 3;
-      message[len] = '\0';
-
-      thread_posi[thread_num] = 4;
-      printf ("loop %d: %s\n", thread_num, message);
-
-      thread_posi[thread_num] = 5;
+      message[util->len_payload] = '\0';
+      printf ("loop %ld: %s\n", util->thread_num, message);
       usleep (rand () % 1000000);
     }
-
-    thread_posi[thread_num] = 6;
   }
 
-  thread_posi[thread_num] = 7;
-  pthread_cleanup_pop (0);
+  pthread_cleanup_pop (1);
 
-  thread_posi[thread_num] = 8;
   return NULL;
 }
 
@@ -106,8 +146,7 @@ int main ()
 
   for (i = 0; i < NUM_THREADS; i++)
   {
-    thread_args[i] = i;
-    ret_val = pthread_create (thread_pool + i, NULL, loop, thread_args + i);
+    ret_val = pthread_create (thread_pool + i, NULL, loop, NULL);
 
     if (0 != ret_val)
     {
@@ -118,16 +157,16 @@ int main ()
 
   while (keep_running)
   {
-		// just messing about
-		//ret_val = pause();
+    // just messing about
+    //ret_val = pause();
 
-		//if(0 != ret_val)
-		//{
-		//	if(errno != EINTR)
-		//	{
-		//		perror("pause: ");
-		//	}
-		//}
+    //if(0 != ret_val)
+    //{
+    //      if(errno != EINTR)
+    //      {
+    //              perror("pause: ");
+    //      }
+    //}
 
     ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
     if (0 != ret_val)
@@ -183,11 +222,6 @@ int main ()
   {
     perror ("unlink: ");
     exit (EXIT_FAILURE);
-  }
-
-  for (i = 0; i < NUM_THREADS; i++)
-  {
-    printf ("thread %lu ended at %d\n", i, thread_posi[i]);
   }
 
   printf ("%s %s %d: %s\n",
