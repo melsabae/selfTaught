@@ -105,6 +105,7 @@ void *loop (void *arg)
 
 	while (true)
 	{
+		pthread_cleanup_push (cleanup_thread_util, util);
 		ret_val = pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, NULL);
 		if (0 != ret_val)
 		{
@@ -112,9 +113,7 @@ void *loop (void *arg)
 			pthread_exit (NULL);
 		}
 
-		pthread_cleanup_push (cleanup_thread_util, util);
-		util->len_payload = mq_receive (prio_queue, message, 8192, NULL);
-		pthread_cleanup_pop(0);
+		util->len_payload = mq_receive (prio_queue, message, attr.mq_msgsize, NULL);
 
 		ret_val = pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
 		if (0 != ret_val)
@@ -122,6 +121,7 @@ void *loop (void *arg)
 			perror ("setcancelstate: ");
 			pthread_exit (NULL);
 		}
+		pthread_cleanup_pop(0);
 
 		/* generic queue processing */
 		if (util->len_payload > 0)
@@ -139,11 +139,22 @@ int main ()
 {
 	int ret_val = 0;
 	size_t i = 0;
+	struct mq_attr attr;
 
 	signal (SIGINT, signal_handler);
 	srand (time (NULL));
 
-	prio_queue = mq_open (THREAD_POOL_NAME, O_CREAT | O_RDWR, 0600, NULL);
+	memset(&attr, 0, sizeof(attr));
+
+	/* number of messages, maximum */
+	/* maximum for the system is in /proc/sys/fs/mqueue/msg_max */
+	attr.mq_maxmsg	= 10;
+	
+	/* size of message in bytes, maximum */
+	/* maximum for the system is in /proc/sys/fs/mqueue/msgsize_max */
+	attr.mq_msgsize	= 32;
+
+	prio_queue = mq_open (THREAD_POOL_NAME, O_CREAT | O_RDWR, 0600, &attr);
 	if (((mqd_t) - 1) == prio_queue)
 	{
 		perror ("open: ");
@@ -206,11 +217,17 @@ int main ()
 	// TODO: process all remaining messages in the queue
 	{
 		ssize_t len = 0;
-		char leftovers[8192] = { 0 };
+		char* leftovers = calloc(1, attr.mq_msgsize);
+
+		if(NULL == leftovers)
+		{
+			perror("calloc: ");
+			exit (EXIT_FAILURE);
+		}
 
 		while (0 != len)
 		{
-			len = mq_receive (prio_queue, leftovers, 8192, NULL);
+			len = mq_receive (prio_queue, leftovers, attr.mq_msgsize, NULL);
 
 			//service the remaining messages
 		}
