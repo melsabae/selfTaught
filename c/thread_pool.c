@@ -165,7 +165,7 @@ int main ()
 
     while (0 != len)
     {
-      mq_receive (prio_queue, leftovers, 8192, NULL);
+      len = mq_receive (prio_queue, leftovers, 8192, NULL);
 
       //service the remaining messages
     }
