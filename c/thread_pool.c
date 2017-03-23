@@ -23,210 +23,216 @@ pthread_t thread_pool[NUM_THREADS];
 
 typedef struct
 {
-  ptrdiff_t thread_num;
-  ssize_t len_payload;
-  void *payload;
+	ptrdiff_t thread_num;
+	ssize_t len_payload;
+	void *payload;
 } thread_util;
 
 void signal_handler (int signal)
 {
-  keep_running = false;
-  caught_signal = signal;
+	keep_running = false;
+	caught_signal = signal;
 }
 
 void cleanup_thread_util (void *arg)
 {
-  if (NULL == arg)
-  {
-    return;
-  }
+	if (NULL == arg)
+	{
+		return;
+	}
 
-  thread_util *util = arg;
+	thread_util *util = arg;
 
-  if (NULL != util->payload)
-  {
+	if (NULL != util->payload)
+	{
 		uint8_t* payload = util->payload;
 
-    printf ("%ld %s: ", util->thread_num, "payload");
-    for (ssize_t i = 0; i < util->len_payload; i++)
-    {
-      printf ("%.2X", payload[i]);
-    }
-    puts ("");
+		printf ("%ld %s: ", util->thread_num, "payload");
+		for (ssize_t i = 0; i < util->len_payload; i++)
+		{
+			printf ("%.2X", payload[i]);
+		}
+		puts ("");
 
-    free (util->payload);
-  }
+		free (util->payload);
+	}
 }
 
 void *loop (void *arg)
 {
-  if (NULL == arg)
-  {
-    //pthread_exit(NULL);
-  }
+	if (NULL == arg)
+	{
+		//pthread_exit(NULL);
+	}
 
-  int ret_val = 0;
+	int ret_val = 0;
+	thread_util *util = calloc (1, sizeof (thread_util));
+	struct mq_attr attr;
 
-  thread_util *util = calloc (1, sizeof (thread_util));
+	memset (&attr, 0, sizeof (attr));
+	util->thread_num = 0;
+	util->payload = NULL;
 
-  util->thread_num = 0;
-  util->payload = NULL;
+	ret_val = mq_getattr (prio_queue, &attr);
+	if(0 != ret_val)
+	{
+		perror("mq_getattr :");
+		pthread_exit(NULL);
+	}
 
-  {
-    struct mq_attr attr;
+	util->payload = calloc (1, attr.mq_msgsize);
+	if (NULL == util->payload)
+	{
+		pthread_exit (NULL);
+	}
 
-    memset (&attr, 0, sizeof (attr));
+	char *message = util->payload;
 
-    ret_val = mq_getattr (prio_queue, &attr);
-    util->payload = calloc (1, attr.mq_msgsize);
+	for (size_t i = 0; i < NUM_THREADS; i++)
+	{
+		if (0 != pthread_equal (pthread_self (), thread_pool[i]))
+		{
+			util->thread_num = i;
+		}
+	}
 
-    if (NULL == util->payload)
-    {
-      pthread_exit (NULL);
-    }
-  }
+	ret_val = pthread_setcanceltype (PTHREAD_CANCEL_DEFERRED, NULL);
+	if (0 != ret_val)
+	{
+		perror ("setcanceltype: ");
+		pthread_exit (NULL);
+	}
 
-  char *message = util->payload;
+	while (true)
+	{
+		ret_val = pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, NULL);
+		if (0 != ret_val)
+		{
+			perror ("setcancelstate: ");
+			pthread_exit (NULL);
+		}
 
-  for (size_t i = 0; i < NUM_THREADS; i++)
-  {
-    if (0 != pthread_equal (pthread_self (), thread_pool[i]))
-    {
-      util->thread_num = i;
-    }
-  }
+		pthread_cleanup_push (cleanup_thread_util, util);
+		util->len_payload = mq_receive (prio_queue, message, 8192, NULL);
+		pthread_cleanup_pop(0);
 
-  ret_val = pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, NULL);
-  if (0 != ret_val)
-  {
-    perror ("setcancelstate: ");
-    pthread_exit (NULL);
-  }
+		ret_val = pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
+		if (0 != ret_val)
+		{
+			perror ("setcancelstate: ");
+			pthread_exit (NULL);
+		}
 
-  ret_val = pthread_setcanceltype (PTHREAD_CANCEL_DEFERRED, NULL);
-  if (0 != ret_val)
-  {
-    perror ("setcanceltype: ");
-    pthread_exit (NULL);
-  }
+		/* generic queue processing */
+		if (util->len_payload > 0)
+		{
+			message[util->len_payload] = '\0';
+			printf ("loop %ld: %s\n", util->thread_num, message);
+			usleep (rand () % 1000000);
+		}
+	}
 
-  pthread_cleanup_push (cleanup_thread_util, util);
-
-  while (true)
-  {
-    util->len_payload = mq_receive (prio_queue, message, 8192, NULL);
-
-    if (util->len_payload > 0)
-    {
-      message[util->len_payload] = '\0';
-      printf ("loop %ld: %s\n", util->thread_num, message);
-      usleep (rand () % 1000000);
-    }
-  }
-
-  pthread_cleanup_pop (1);
-
-  return NULL;
+	return NULL;
 }
 
 int main ()
 {
-  int ret_val = 0;
-  size_t i = 0;
+	int ret_val = 0;
+	size_t i = 0;
 
-  signal (SIGINT, signal_handler);
-  srand (time (NULL));
+	signal (SIGINT, signal_handler);
+	srand (time (NULL));
 
-  prio_queue = mq_open (THREAD_POOL_NAME, O_CREAT | O_RDWR, 0600, NULL);
-  if (((mqd_t) - 1) == prio_queue)
-  {
-    perror ("open: ");
-    exit (EXIT_FAILURE);
-  }
+	prio_queue = mq_open (THREAD_POOL_NAME, O_CREAT | O_RDWR, 0600, NULL);
+	if (((mqd_t) - 1) == prio_queue)
+	{
+		perror ("open: ");
+		exit (EXIT_FAILURE);
+	}
 
-  for (i = 0; i < NUM_THREADS; i++)
-  {
-    ret_val = pthread_create (thread_pool + i, NULL, loop, NULL);
+	for (i = 0; i < NUM_THREADS; i++)
+	{
+		ret_val = pthread_create (thread_pool + i, NULL, loop, NULL);
 
-    if (0 != ret_val)
-    {
-      perror ("create: ");
-      exit (EXIT_FAILURE);
-    }
-  }
+		if (0 != ret_val)
+		{
+			perror ("create: ");
+			exit (EXIT_FAILURE);
+		}
+	}
 
-  while (keep_running)
-  {
-    // just messing about
-    //ret_val = pause();
+	while (keep_running)
+	{
+		// just messing about
+		//ret_val = pause();
 
-    //if(0 != ret_val)
-    //{
-    //      if(errno != EINTR)
-    //      {
-    //              perror("pause: ");
-    //      }
-    //}
+		//if(0 != ret_val)
+		//{
+		//      if(errno != EINTR)
+		//      {
+		//              perror("pause: ");
+		//      }
+		//}
 
-    ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
-    if (0 != ret_val)
-    {
-      perror ("mq_send: ");
-      exit (EXIT_FAILURE);
-    }
+		ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
+		if (0 != ret_val)
+		{
+			perror ("mq_send: ");
+			exit (EXIT_FAILURE);
+		}
 
-    usleep (rand () % 20000);
-  }
+		usleep (rand () % 20000);
+	}
 
-  for (i = 0; i < NUM_THREADS; i++)
-  {
-    ret_val = pthread_cancel (thread_pool[i]);
+	for (i = 0; i < NUM_THREADS; i++)
+	{
+		ret_val = pthread_cancel (thread_pool[i]);
 
-    if (0 != ret_val)
-    {
-      perror ("cancel: ");
-      exit (EXIT_FAILURE);
-    }
+		if (0 != ret_val)
+		{
+			perror ("cancel: ");
+			exit (EXIT_FAILURE);
+		}
 
-    ret_val = pthread_join (thread_pool[i], NULL);
+		ret_val = pthread_join (thread_pool[i], NULL);
 
-    if (0 != ret_val)
-    {
-      perror ("create: ");
-      exit (EXIT_FAILURE);
-    }
-  }
+		if (0 != ret_val)
+		{
+			perror ("create: ");
+			exit (EXIT_FAILURE);
+		}
+	}
 
-  // TODO: process all remaining messages in the queue
-  {
-    ssize_t len = 0;
-    char leftovers[8192] = { 0 };
+	// TODO: process all remaining messages in the queue
+	{
+		ssize_t len = 0;
+		char leftovers[8192] = { 0 };
 
-    while (0 != len)
-    {
-      len = mq_receive (prio_queue, leftovers, 8192, NULL);
+		while (0 != len)
+		{
+			len = mq_receive (prio_queue, leftovers, 8192, NULL);
 
-      //service the remaining messages
-    }
-  }
+			//service the remaining messages
+		}
+	}
 
-  ret_val = mq_close (prio_queue);
-  if (0 != ret_val)
-  {
-    perror ("mq_close: ");
-    exit (EXIT_FAILURE);
-  }
+	ret_val = mq_close (prio_queue);
+	if (0 != ret_val)
+	{
+		perror ("mq_close: ");
+		exit (EXIT_FAILURE);
+	}
 
-  ret_val = mq_unlink (THREAD_POOL_NAME);
-  if (0 != ret_val)
-  {
-    perror ("unlink: ");
-    exit (EXIT_FAILURE);
-  }
+	ret_val = mq_unlink (THREAD_POOL_NAME);
+	if (0 != ret_val)
+	{
+		perror ("unlink: ");
+		exit (EXIT_FAILURE);
+	}
 
-  printf ("%s %s %d: %s\n",
-	  __FUNCTION__,
-	  "ended by signal:", caught_signal, strsignal (caught_signal));
+	printf ("%s %s %d: %s\n",
+			__FUNCTION__,
+			"ended by signal:", caught_signal, strsignal (caught_signal));
 
-  return 0;
+	return 0;
 }
