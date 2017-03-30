@@ -13,7 +13,7 @@
 #include <inttypes.h>
 
 #define THREAD_POOL_NAME "/thread_pool_test"
-#define NUM_THREADS 48
+#define NUM_THREADS 128
 
 typedef struct
 {
@@ -68,14 +68,10 @@ void *loop (void *arg)
 	int ret_val = 0;
 	thread_util* util = NULL;
 	struct mq_attr attr;
-	sigset_t set;
 	mqd_t prio_queue;
 
 	memset (&attr, 0, sizeof (attr));
-	memset(&set, 0, sizeof(set));
 	memset (&prio_queue, 0, sizeof(prio_queue));
-
-	sigfillset(&set);
 
 	ret_val = pthread_setcanceltype (PTHREAD_CANCEL_DEFERRED, NULL);
 	if (0 != ret_val)
@@ -84,11 +80,15 @@ void *loop (void *arg)
 		pthread_exit (NULL);
 	}
 
-	ret_val = pthread_sigmask(SIG_BLOCK, &set, NULL);
-	if(0 != ret_val)
 	{
-		fprintf(stderr, "%s\n", "pthread_sigmask failure");
-		pthread_exit (NULL);
+		sigset_t set;
+		sigfillset(&set);
+		ret_val = pthread_sigmask(SIG_BLOCK, &set, NULL);
+		if(0 != ret_val)
+		{
+			fprintf(stderr, "%s\n", "pthread_sigmask failure");
+			pthread_exit (NULL);
+		}
 	}
 
 	ret_val = prio_queue = mq_open (THREAD_POOL_NAME, O_RDONLY);
@@ -164,7 +164,7 @@ void *loop (void *arg)
 			message[util->len_payload] = '\0';
 			printf ("loop %ld: %s\n", util->thread_num, message);
 
-			ret_val = usleep (rand () % 1000000);
+			ret_val = usleep (rand () % 100);
 			if(0 != ret_val)
 			{
 				fprintf(stderr, "%s%s\n", "usleep: ", strerror(errno));
@@ -239,10 +239,10 @@ int main ()
 		ret_val = mq_send (prio_queue, "ahoy matey", strlen ("ahoy matey"), 1);
 		if(0 != ret_val)
 		{
-			fprintf(stderr, "%s%s\n", "mq_send: ", strerror(errno));
+			//fprintf(stderr, "%s%s\n", "mq_send: ", strerror(errno));
 		}
 
-		usleep (rand () % 20000);
+		usleep (rand () % 5000);
 	}
 
 	for (i = 0; i < NUM_THREADS; i++)
