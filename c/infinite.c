@@ -1,39 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 
-int caught_signal = 0;
+size_t counter = 0;
 
-void main(int, void**);
+void exit_handler(void);
+int main(int, char**);
+void signal_handler(int);
 
 void signal_handler(int signal)
 {
 	switch(signal)
 	{
 		case SIGHUP:
-			while(0 != on_exit(main, NULL))
-			{
-				puts("registering");
-			}
+			atexit(exit_handler);
 			break;
 
 		default:
-			caught_signal = signal;
 			break;
 	}
 }
 
-void  main(int argc, void** argv)
+void exit_handler(void)
 {
-	printf("argc: %d\n", argc);
+	main(counter, NULL);
+}
+
+int main(int argc, char** argv)
+{
 	signal(SIGHUP, signal_handler);
-	signal(SIGINT, signal_handler);
-	signal(SIGTERM, signal_handler);
+	signal(SIGSEGV, signal_handler);
+	counter = argc;
 
-	if(0 != caught_signal)
-	{
-		printf("caught signal: %d\n", signal);
-	}
+	// this program runs for a while then segfaults
+	// the only thing it's doing is handling the HUP signal, then restarting
+	// so why does it segfault?
 
+	printf("argc: %d\n", argc);
+	counter ++;
 	pause();
+
+	exit (EXIT_FAILURE);
 }
