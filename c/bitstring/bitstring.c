@@ -24,27 +24,42 @@ bs_type_t bitstring_type_unsigned(uint64_t num)
 
 bs_type_t bitstring_type_signed(int64_t num)
 {
-	bs_param_t param =
+	if(INT32_MIN > num)
 	{
-		.s = num,
-	};
-
-	bs_type_t type = bitstring_type_unsigned(param.u);
-
-	switch(type)
-	{
-		case BS_U8:
-			return BS_S8;
-		case BS_U16:
-			return BS_S16;
-		case BS_U32:
-			return BS_S32;
-
-		case BS_U64:
-			/* intentional fall-through in case statement */
-		default:
-			return BS_S64;
+		return (BS_S64);
 	}
+
+	if(INT16_MIN > num)
+	{
+		return (BS_S32);
+	}
+
+	if(INT8_MIN > num)
+	{
+		return (BS_S16);
+	}
+
+	if(INT8_MAX >= num)
+	{
+		return (BS_S8);
+	}
+
+	if(INT32_MAX < num)
+	{
+		return (BS_S64);
+	}
+
+	if(INT16_MAX < num)
+	{
+		return (BS_S32);
+	}
+
+	if(INT8_MAX < num)
+	{
+		return (BS_S16);
+	}
+
+	return (BS_S8);
 }
 
 bs_error_t bitstring_reset(bs_t* bst)
@@ -80,9 +95,9 @@ bs_error_t bitstring_create_alloc(bs_t** bst)
 	if(BS_ERR_NONE != err)	{ ERROR_OUT(err) }
 
 	(*bst)									= _bst;
-cleanup:
 
-	// if the user's pointer was not set, free the allocated memory
+cleanup:
+	// if the user's pointer was not set, free the allocated memory due to error
 	if(NULL == (*bst))
 	{
 		free(_bst);
@@ -161,16 +176,37 @@ bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len)
 			return (BS_INVALID_ARG);
 	}
 
-	if((len + 1) > buf_len)
+	if((len + 2) > buf_len)
 	{
 		return (BS_BUF_SHORT);
 	}
 
 	buffer = buf;
 
+	switch(bst -> type)
+	{
+		case BS_U8:
+		case BS_U16:
+		case BS_U32:
+		case BS_U64:
+			buffer[0] = 'u';
+			break;
+		case BS_S8:
+		case BS_S16:
+		case BS_S32:
+		case BS_S64:
+			buffer[0] = 's';
+			break;
+
+		default:
+			return (BS_INVALID_ARG);
+	}
+
+	++ buffer;
+
 	for(i = 0; i < len; i++)
 	{
-		if(bst -> num.u & (1 << i))
+		if(0 != ((bst -> num.u) & (1 << i)))
 		{
 			buffer[len - i - 1] = '1';
 		}
