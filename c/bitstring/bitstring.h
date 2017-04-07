@@ -54,4 +54,7 @@ bs_error_t bitstring_make_signed(bs_t* bst, int64_t num);
 bs_error_t bitstring_make_unsigned(bs_t* bst, int64_t num);
 
 bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len);
+
+bs_error_t bitstring_destroy(bs_t* bst);
 #endif
+

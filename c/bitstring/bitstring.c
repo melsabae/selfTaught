@@ -141,15 +141,19 @@ bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len)
 	switch(bst -> type)
 	{
 		case BS_S8:
+		case BS_U8:
 			len = 8u;
 			break;
 		case BS_S16:
+		case BS_U16:
 			len = 16u;
 			break;
 		case BS_S32:
+		case BS_U32:
 			len = 32u;
 			break;
 		case BS_S64:
+		case BS_U64:
 			len = 64u;
 			break;
 
@@ -157,7 +161,7 @@ bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len)
 			return (BS_INVALID_ARG);
 	}
 
-	if((len + 1) < buf_len)
+	if((len + 1) > buf_len)
 	{
 		return (BS_BUF_SHORT);
 	}
@@ -168,13 +172,26 @@ bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len)
 	{
 		if(bst -> num.u & (1 << i))
 		{
-			buffer[i] = '1';
+			buffer[len - i - 1] = '1';
 		}
 		else
 		{
-			buffer[i] = '0';
+			buffer[len - i - 1] = '0';
 		}
 	}
 
+	buffer[len] = 0;
+
+	return (BS_ERR_NONE);
+}
+
+bs_error_t bitstring_destroy(bs_t* bst)
+{
+	if(NULL == bst)
+	{
+		return (BS_NULL_ARG);
+	}
+
+	free(bst);
 	return (BS_ERR_NONE);
 }
