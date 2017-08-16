@@ -141,6 +141,7 @@ void *loop (void *arg)
 			pthread_exit (NULL);
 		}
 
+		pthread_testcancel();
 		util->len_payload = mq_receive (prio_queue, message, attr.mq_msgsize, NULL);
 
 		ret_val = pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
