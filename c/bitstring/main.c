@@ -12,7 +12,7 @@ int main()
 
 	assert(bitstring_create(&bs) == BS_ERR_NONE);
 
-	for(int i = INT16_MIN; i <= INT16_MAX; i++)
+	for(int i = INT8_MIN; i <= INT8_MAX; i++)
 	{
 		assert(bitstring_make_signed(&bs, i) == BS_ERR_NONE);
 		err = bitstring_serialize(&bs, buffer, 128);

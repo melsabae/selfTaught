@@ -206,14 +206,9 @@ bs_error_t bitstring_serialize(bs_t* bst, void* buf, size_t buf_len)
 
 	for(i = 0; i < len; i++)
 	{
-		if(0 != ((bst -> num.u) & (1 << i)))
-		{
-			buffer[len - i - 1] = '1';
-		}
-		else
-		{
-			buffer[len - i - 1] = '0';
-		}
+		// strip the bit out of its position, divide it by its value, add an ascii
+		// offset to the number 1 or number 0
+		buffer[len - i - 1] = ((bst -> num.u) & (1 << i)) / (1 << i) + 0x30;
 	}
 
 	buffer[len] = 0;
