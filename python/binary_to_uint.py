@@ -1,23 +1,41 @@
 from functools import partial as p
-from struct import unpack as u
+from struct import unpack as _u
 
 
-def h_uint(h: str, s: slice) -> int:
-    return t(bytes.fromhex(h[s]))
+def _h_uint(h: str, s: slice) -> int:
+    return _t(bytes.fromhex(h[s]))
 
 
-def b_uint(b: bytes, s: slice) -> int:
-    return t(b[s])
+def _b_uint(b: bytes, s: slice) -> int:
+    return _t(b[s])
 
 
-def h_float(h: str) -> float:
-    return u("<f", bytes.fromhex(h))[0]
+def _h_float(h: str) -> float:
+    return _u("<f", bytes.fromhex(h))[0]
 
 
-def b_float(h: bytes) -> float:
-    return u("<f", h)[0]
+def _b_float(h: bytes) -> float:
+    return _u("<f", h)[0]
 
 
-t = p(int.from_bytes, byteorder='little')
-get_h8, get_h16, get_h32, get_h64 = map(lambda _: p(h_uint, s=_), map(lambda _: slice(2 ** _), range(1, 5)))  # 2,4,8,16
-get_b8, get_b16, get_b32, get_b64 = map(lambda _: p(b_uint, s=_), map(lambda _: slice(2 ** _), range(4)))  # 1,2,4,8
+def get_uint(h, s):
+    return _am[(type(h), s)](h) if (type(h), s) in _am else None
+
+
+_t = p(int.from_bytes, byteorder='little')
+h8, h16, h32, h64 = map(lambda _: p(_h_uint, s=_), map(lambda _: slice(2 ** _), range(1, 5)))  # 2, 4, 8, 16
+b8, b16, b32, b64 = map(lambda _: p(_b_uint, s=_), map(lambda _: slice(2 ** _), range(4)))  # 1, 2, 4, 8
+
+"""
+bytes => bits
+"""
+_am = {
+    (type(""),          1): h8,
+    (type(""),          2): h16,
+    (type(""),          4): h32,
+    (type(""),          8): h64,
+    (type(bytes([])),   1): b8,
+    (type(bytes([])),   2): b16,
+    (type(bytes([])),   4): b32,
+    (type(bytes([])),   8): b64,
+}
