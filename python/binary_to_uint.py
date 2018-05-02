@@ -23,19 +23,19 @@ def get_uint(h, s):
 
 
 _t = p(int.from_bytes, byteorder='little')
-h8, h16, h32, h64 = map(lambda _: p(_h_uint, s=_), map(lambda _: slice(2 ** _), range(1, 5)))  # 2, 4, 8, 16
-b8, b16, b32, b64 = map(lambda _: p(_b_uint, s=_), map(lambda _: slice(2 ** _), range(4)))  # 1, 2, 4, 8
+_h8, _h16, _h32, _h64 = map(lambda _: p(_h_uint, s=_), map(lambda _: slice(2 ** _), range(1, 5)))  # 2, 4, 8, 16
+_b8, _b16, _b32, _b64 = map(lambda _: p(_b_uint, s=_), map(lambda _: slice(2 ** _), range(4)))  # 1, 2, 4, 8
 
 """
 bytes => bits
 """
 _am = {
-    (type(""),          1): h8,
-    (type(""),          2): h16,
-    (type(""),          4): h32,
-    (type(""),          8): h64,
-    (type(bytes([])),   1): b8,
-    (type(bytes([])),   2): b16,
-    (type(bytes([])),   4): b32,
-    (type(bytes([])),   8): b64,
+    (type(""),          1): _h8,
+    (type(""),          2): _h16,
+    (type(""),          4): _h32,
+    (type(""),          8): _h64,
+    (type(bytes([])),   1): _b8,
+    (type(bytes([])),   2): _b16,
+    (type(bytes([])),   4): _b32,
+    (type(bytes([])),   8): _b64,
 }
