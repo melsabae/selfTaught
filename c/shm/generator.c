@@ -13,8 +13,8 @@
 
 
 const char *SHM_NAME = "simulation";
-const int OFLAG = O_RDWR | O_CREAT | O_EXCL | O_TRUNC;
-const mode_t MODE = 0400;
+const int OFLAG = O_RDWR | O_CREAT;
+const mode_t MODE = 0666;
 const int BUF_SIZE = 64;
 const int BUF_MAX = BUF_SIZE - 1;
 
@@ -43,12 +43,14 @@ int main(int argc, char** argv) {
 
 		printf("%s\t%s\n", "writing new string", (char*) garbage);
 		write(fd, garbage, BUF_SIZE);
-		usleep(rand() % ((int) 5E6));
 
 		if(0 == (rand() % 4)) {
 			puts("truncating");
 			ftruncate(fd, 0);
+            lseek(fd, 0, SEEK_SET);
 		}
+
+		usleep(rand() % ((int) 5E6));
 	}
 
 	(void) close(fd);
