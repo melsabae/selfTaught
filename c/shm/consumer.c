@@ -31,21 +31,28 @@ int main(int argc, char** argv) {
 	uint8_t garbage[BUF_SIZE];
 	garbage[BUF_MAX] = 0;
 
-
-
     if (0 >= fd)
     {
         perror(NULL);
         return -2;
     }
 
+    void* mapped = mmap(NULL, BUF_SIZE, PROT_READ, MAP_SHARED, fd, 0);
+
+    if (NULL == mapped || MAP_FAILED == mapped)
+    {
+        perror(NULL);
+        return -1;
+    }
+
+    close(fd);
+
 	while(! stop) {
-        read(fd, garbage, BUF_SIZE);
-		printf("%s\t%s\n", "got new string", (char*) garbage);
+		printf("%s\t%s\n", "got new string", (char*) mapped);
         usleep((int) 6E5);
 	}
 
-    close(fd);
+    munmap(mapped, BUF_SIZE);
 
 	return (EXIT_SUCCESS);
 }

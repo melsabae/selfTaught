@@ -28,32 +28,49 @@ void signal_handler(int signal) {
 
 int main(int argc, char** argv) {
 	srand(time(NULL));
-
 	signal(SIGINT, signal_handler);
 
 	int fd = shm_open(SHM_NAME, OFLAG, MODE);
 	uint8_t garbage[BUF_SIZE];
 	garbage[BUF_MAX] = 0;
 
+    if (2 >= fd)
+    {
+        perror(NULL);
+        return -1;
+    }
+
+    // gotta do this first, else accessing an mmap'd pointer can cause a SIGBUS
+    ftruncate(fd, BUF_SIZE);
+
+    void* mapped = mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+    if (NULL == mapped || MAP_FAILED == mapped)
+    {
+        perror(NULL);
+        return -2;
+    }
+
+    close(fd);
 
 	while(! stop) {
 		for(size_t i = 0; i < BUF_MAX; i ++) {
 			garbage[i] = (rand() % (122 - 97)) + 97;
 		}
 
+        snprintf(mapped, BUF_SIZE, "%s", garbage);
+
 		printf("%s\t%s\n", "writing new string", (char*) garbage);
 		write(fd, garbage, BUF_SIZE);
 
 		if(0 == (rand() % 4)) {
 			puts("truncating");
-			ftruncate(fd, 0);
-            lseek(fd, 0, SEEK_SET);
 		}
 
 		usleep(rand() % ((int) 5E6));
 	}
 
-	(void) close(fd);
+    (void) munmap(mapped, BUF_SIZE);
 	(void) shm_unlink(SHM_NAME);
 	return (EXIT_SUCCESS);
 }
