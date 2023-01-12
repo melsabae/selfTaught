@@ -26,27 +26,66 @@ int main(void)
     std::vector<float> h_a(N);
     std::vector<float> h_b(N);
     std::vector<float> h_c(N);
-
     std::size_t error_count = 0;
 
     float* d_a = NULL;
     float* d_b = NULL;
     float* d_c = NULL;
 
-    cudaMalloc(&d_a, N * sizeof(h_a[0]));
-    cudaMalloc(&d_b, N * sizeof(h_b[0]));
-    cudaMalloc(&d_c, N * sizeof(h_c[0]));
+    cudaStream_t stream;
 
     std::fill(h_a.begin(), h_a.end(), 1.0);
     std::fill(h_b.begin(), h_b.end(), 2.0);
 
-    cudaMemcpy(d_a, h_a.data(), N * sizeof(h_a[0]), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_b, h_b.data(), N * sizeof(h_b[0]), cudaMemcpyHostToDevice);
+    if (cudaSuccess != cudaStreamCreate(&stream))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
 
-    vec_add<<<grid_size, block_size>>>(d_c, d_a, d_b, N);
+    if (cudaSuccess != cudaMalloc(&d_a, N * sizeof(h_a[0])))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
 
-    cudaMemcpy(h_c.data(), d_c, N * sizeof(h_c[0]), cudaMemcpyDeviceToHost);
-    cudaDeviceSynchronize(); // kernels are launched async, host immediately returns, so block until the computation is done
+    if (cudaSuccess != cudaMalloc(&d_b, N * sizeof(h_b[0])))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
+
+    if (cudaSuccess != cudaMalloc(&d_c, N * sizeof(h_c[0])))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
+
+    if (cudaSuccess != cudaMemcpyAsync(d_a, h_a.data(), N * sizeof(h_a[0]), cudaMemcpyHostToDevice, stream))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
+
+    if (cudaSuccess != cudaMemcpyAsync(d_b, h_b.data(), N * sizeof(h_b[0]), cudaMemcpyHostToDevice, stream))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
+
+    vec_add<<<grid_size, block_size, 0, stream>>>(d_c, d_a, d_b, N);
+
+    if (cudaSuccess != cudaMemcpyAsync(h_c.data(), d_c, N * sizeof(h_c[0]), cudaMemcpyDeviceToHost, stream))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
+
+    if (cudaSuccess != cudaStreamSynchronize(stream))
+    {
+        std::cout << __LINE__ << std::endl;
+        return -__LINE__;
+    }
 
     for (std::size_t i = 0; i < N; ++ i)
     {
@@ -62,6 +101,7 @@ int main(void)
     cudaFree(d_a);
     cudaFree(d_b);
     cudaFree(d_c);
+    cudaStreamDestroy(stream);
     return 0;
 }
 
