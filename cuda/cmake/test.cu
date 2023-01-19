@@ -1,11 +1,13 @@
 #include <iostream>
 #include <math.h>
 #include <unistd.h>
-#include <memory>
+//#include <memory>
 #include <algorithm>
 #include <vector>
 
+
 const std::size_t N = 1 << 20;
+
 
 __global__
 void vec_add(float* const c, const float* const a, const float* const b, const std::size_t n)
@@ -15,6 +17,17 @@ void vec_add(float* const c, const float* const a, const float* const b, const s
         c[i] = a[i] + b[i];
     }
 }
+
+
+__global__
+void vec_inc(float* const c, const std::size_t n)
+{
+    for (std::size_t i = threadIdx.x + (blockIdx.x * blockDim.x); i < n; i += (blockDim.x * gridDim.x))
+    {
+        ++ c[i];
+    }
+}
+
 
 int main(void)
 {
@@ -75,6 +88,10 @@ int main(void)
 
     vec_add<<<grid_size, block_size, 0, stream>>>(d_c, d_a, d_b, N);
 
+    // this is slower to execute since we can just +1 in the prior kernel
+    // this is more for fun
+    vec_inc<<<grid_size, block_size, 0, stream>>>(d_c, N);
+
     if (cudaSuccess != cudaMemcpyAsync(h_c.data(), d_c, N * sizeof(h_c[0]), cudaMemcpyDeviceToHost, stream))
     {
         std::cout << __LINE__ << std::endl;
@@ -89,7 +106,7 @@ int main(void)
 
     for (std::size_t i = 0; i < N; ++ i)
     {
-        if (h_a[i] + h_b[i] != h_c[i])
+        if (h_a[i] + h_b[i] + 1 != h_c[i])
         {
             //std::cout << i << " " << h_c[i] << std::endl;
             ++ error_count;
