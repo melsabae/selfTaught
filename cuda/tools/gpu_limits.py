@@ -20,6 +20,7 @@ __attributes__ = [
     #, pycuda.driver.device_attribute.CONCURRENT_KERNELS
     #, pycuda.driver.device_attribute.PCI_BUS_ID
     #, pycuda.driver.device_attribute.PCI_DEVICE_ID
+    , pycuda.driver.device_attribute.MAX_THREADS_PER_MULTIPROCESSOR
 ]
 
 
