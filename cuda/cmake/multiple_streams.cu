@@ -7,7 +7,7 @@
 #include <vector>
 
 
-const std::size_t NUMBER_STREAMS = 1;
+const std::size_t NUMBER_STREAMS = 80;
 const std::size_t N = 1 << 20;
 
 
@@ -60,19 +60,19 @@ int make_test_struct(test_struct_t& t)
         return -__LINE__;
     }
 
-    if (cudaSuccess != cudaMalloc(&t.d_a, N * sizeof(t.d_a[0])))
+    if (cudaSuccess != cudaMallocHost(&t.d_a, N * sizeof(t.d_a[0])))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
     }
 
-    if (cudaSuccess != cudaMalloc(&t.d_b, N * sizeof(t.d_b[0])))
+    if (cudaSuccess != cudaMallocHost(&t.d_b, N * sizeof(t.d_b[0])))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
     }
 
-    if (cudaSuccess != cudaMalloc(&t.d_c, N * sizeof(t.d_c[0])))
+    if (cudaSuccess != cudaMallocHost(&t.d_c, N * sizeof(t.d_c[0])))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
@@ -89,19 +89,19 @@ int make_test_struct(test_struct_t& t)
 
 int destroy_test_struct(test_struct_t& t)
 {
-    if (cudaSuccess != cudaFree(t.d_a))
+    if (cudaSuccess != cudaFreeHost(t.d_a))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
     }
 
-    if (cudaSuccess != cudaFree(t.d_b))
+    if (cudaSuccess != cudaFreeHost(t.d_b))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
     }
 
-    if (cudaSuccess != cudaFree(t.d_c))
+    if (cudaSuccess != cudaFreeHost(t.d_c))
     {
         std::cout << __FUNCTION__ << " " << __LINE__ << std::endl;
         return -__LINE__;
