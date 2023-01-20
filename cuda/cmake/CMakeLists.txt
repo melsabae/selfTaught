@@ -25,3 +25,11 @@ add_executable(grid_stride grid_stride.cu)
 set_target_properties(grid_stride PROPERTIES CUDA_ARCHITECTURES "native")
 target_compile_features(grid_stride PUBLIC cuda_std_17)
 
+
+
+
+add_executable(small_transfers small_transfers.cu)
+
+set_target_properties(small_transfers PROPERTIES CUDA_ARCHITECTURES "native")
+target_compile_features(small_transfers PUBLIC cuda_std_17)
+
