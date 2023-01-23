@@ -6,3 +6,7 @@ add_executable(sample1 sample1.cpp)
 target_include_directories(sample1 PUBLIC "/usr/include/opencv4")
 target_link_libraries(sample1 opencv_core opencv_highgui opencv_imgcodecs)
 
+add_executable(sample2 sample2.cpp)
+target_include_directories(sample2 PUBLIC "/usr/include/opencv4")
+target_link_libraries(sample2 opencv_core opencv_highgui opencv_imgcodecs)
+
