@@ -95,6 +95,9 @@ int main(void)
     {
         if (((h_m * (*h_x)[i]) + h_b) != (*h_y)[i])
         {
+            // because the GPU and CPU compute differences in floats, output what the difference is
+            // it should be very small
+            std::cout << (((h_m * (*h_x)[i]) + h_b) - (*h_y)[i]) << std::endl;
             ++ error_count;
         }
     }
