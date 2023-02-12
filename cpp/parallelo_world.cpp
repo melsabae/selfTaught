@@ -25,6 +25,8 @@ int main( int argc, char** argv ) {
 				, std::end( s )
 				, f
 				);
+
+        std::cout << std::flush;
 	}
 
 	std::cout << std::endl << std::flush;
