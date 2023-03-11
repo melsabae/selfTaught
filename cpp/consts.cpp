@@ -21,6 +21,7 @@ constexpr void mut_x(const int& x)
 {
     // const is just a compiler hint, if the storage is not in ROM, then you can mutate it
     // this will segfault if x is actually non-mutable
+    // this is even constexpr if we want
     auto& non_const_x = const_cast<int&>(x);
     non_const_x = x + 5;
 }
