@@ -1,8 +1,16 @@
 #include <iostream>
 
+constexpr double haha_hwat(const int x)
+{
+    return static_cast<double>(x + 17);
+}
+
 
 const double sol = 299'792'458; // just some constant that maybe compiles in as machine-code-literal
 constexpr double sol2 = 299'792'458; // as good as a macro, which will compile in as machine-code-literal
+
+// constinit applies to the evaluation of the value, not the variable, hence it is constinit const
+constinit const static double sol3 = haha_hwat(55);
 
 
 // may be expanded as a compile-time constant
@@ -54,6 +62,8 @@ int main(int argc, char** argv)
     std::cout << x << std::endl;
     mut_x(x);
     std::cout << x << std::endl;
+
+    std::cout << sol3 << std::endl;
 
     return 0;
 }
