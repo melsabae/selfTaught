@@ -57,7 +57,6 @@ def main():
         #   give it a title
         #   make it visible
         for j, image_index in enumerate(v):
-            print(image_index)
             axes[image_index].cla()
             axes[image_index].imshow(data[image_index])
             axes[image_index].set_position(gs[j].get_position(fig))
