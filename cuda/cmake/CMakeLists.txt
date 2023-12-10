@@ -33,3 +33,9 @@ add_executable(small_transfers small_transfers.cu)
 set_target_properties(small_transfers PROPERTIES CUDA_ARCHITECTURES "native")
 target_compile_features(small_transfers PUBLIC cuda_std_20)
 
+
+add_executable(indexing indexing.cu)
+
+set_target_properties(indexing PROPERTIES CUDA_ARCHITECTURES "native")
+target_compile_features(indexing PUBLIC cuda_std_20)
+
